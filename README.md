@@ -47,7 +47,7 @@ cp terraform-provider-mgtt.exe $env:APPDATA\terraform.d\plugins\local.com\mgthet
 On Unix systems run:
 
 ```sh
-# Linux Ubuntu or debian with amd64 CPU architecture
+# Linux Ubuntu >=18.04 or debian >=11 with amd64 CPU architecture
 mkdir -vp ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/linux_amd64/
 cp terraform-provider-mgtt ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/linux_amd64/
 
