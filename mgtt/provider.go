@@ -1,4 +1,4 @@
-package layers
+package mgtt
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
