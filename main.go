@@ -1,6 +1,8 @@
-package terraform_provider_blob_services
+package main
 
 import (
+	"github.com/MGTheTrain/terraform-provider-blob-services/layers"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
@@ -8,7 +10,7 @@ import (
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: func() *schema.Provider {
-			return Provider()
+			return layers.Provider()
 		},
 	})
 }

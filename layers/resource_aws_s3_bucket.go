@@ -1,4 +1,4 @@
-package terraform_provider_blob_services
+package layers
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
