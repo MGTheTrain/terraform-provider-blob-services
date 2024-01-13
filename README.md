@@ -13,6 +13,7 @@ Sample repository implementing a terraform provider designed for managing blob s
 ## References
 
 - [Writing Custom Terraform Providers](https://www.hashicorp.com/blog/writing-custom-terraform-providers)
+- [terraform-provider-klayer Github repository](https://github.com/ldcorentin/terraform-provider-klayer)
 
 ## How to use
 
