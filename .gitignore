@@ -1,3 +1,4 @@
 go.sum
 build/**
 terraform-provider-mgtt**
+lock.json
