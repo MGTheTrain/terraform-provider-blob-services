@@ -1,4 +1,4 @@
-# terraform-provider-blob-services
+# terraform-provider-mgtt
 
 ## Table of Contents
 
