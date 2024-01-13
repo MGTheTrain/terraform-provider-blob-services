@@ -65,6 +65,7 @@ cp terraform-provider-mgtt terraform.d/plugins/darwin_amd64/
 ### Test provider executable with hcl files and terraform commands
 
 ```sh
+cd terraform
 terraform init
 terraform plan
 terraform apply --auto-approve
