@@ -46,19 +46,19 @@ cd terraform
 On modern Windows OS with amd64 CPU architecture run:
 
 ```sh
-mkdir $env:APPDATA\terraform.d\plugins\local.com\mgthetrain\mgtt\1.0.0\windows_amd64\
-cp terraform-provider-mgtt.exe $env:APPDATA\terraform.d\plugins\local.com\mgthetrain\mgtt\1.0.0\windows_amd64\
+mkdir terraform.d\plugins\windows_amd64\
+cp terraform-provider-mgtt.exe terraform.d\plugins\windows_amd64\
 ```
 
 On Unix systems run:
 
 ```sh
 # Linux Ubuntu >=18.04 or debian >=11 with amd64 CPU architecture
-mkdir -vp ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/linux_amd64/
-cp terraform-provider-mgtt ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/linux_amd64/
+mkdir -vp terraform.d/plugins/linux_amd64/
+cp terraform-provider-mgtt terraform.d/plugins/linux_amd64/
 
 # MacOS with amd64 CPU architecture 
-mkdir -vp ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/darwin_amd64/
-cp terraform-provider-mgtt ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/darwin_amd64/
+mkdir -vp terraform.d/plugins/darwin_amd64/
+cp terraform-provider-mgtt terraform.d/plugins/darwin_amd64/
 ```
 
