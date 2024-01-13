@@ -19,4 +19,35 @@ Sample repository implementing a terraform provider designed for managing blob s
 
 ## How to use
 
-TBD
+### Compile custom provider
+
+On modern Windows OS (version 10 or 11) run: 
+
+```sh
+go build -o terraform-provider-blob-service.exe
+```
+
+On Windows Unix systems run: 
+
+```sh
+go build -o terraform-provider-blob-service
+```
+
+### Copy provider executable to plugins directory
+
+Refer to section `Steps to copy provider executable to plugins directory` of [How to Develop a Custom Provider in Terraform](https://www.infracloud.io/blogs/developing-terraform-custom-provider/).
+
+On modern Windows OS run:
+
+```sh
+mkdir $env:APPDATA\terraform.d\plugins\local.com\mgthetrain\mgtt\1.0.0\windows_amd64\
+cp terraform-provider-blob-service.exe $env:APPDATA\terraform.d\plugins\local.com\mgthetrain\mgtt\1.0.0\windows_amd64\
+```
+
+On Unix systems run:
+
+```sh
+mkdir -vp ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/linux_amd64/
+cp terraform-provider-blob-service ~/.terraform.d/plugins/local.com/mgthetrain/mgtt/1.0.0/linux_amd64/
+```
+
