@@ -33,7 +33,7 @@ On Windows Unix systems run:
 go build -o terraform-provider-mgtt
 ```
 
-### Copy provider executable to plugins directory for testing hcl files
+### Copy provider executable to plugins directory 
 
 Refer to [How to develop/ test existing provider locally?](https://github.com/hashicorp/terraform-provider-aws/issues/5396).
 
@@ -62,3 +62,11 @@ mkdir -vp terraform.d/plugins/darwin_amd64/
 cp terraform-provider-mgtt terraform.d/plugins/darwin_amd64/
 ```
 
+### Test provider executable with hcl files and terraform commands
+
+```sh
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```
