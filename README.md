@@ -13,7 +13,7 @@ Sample repository implementing a terraform provider designed for managing blob s
 ## References
 
 - [Writing Custom Terraform Providers](https://www.hashicorp.com/blog/writing-custom-terraform-providers). This link is deprecated but helpful to understand the basic concepts from the hashicorp founder.
-- [How to Develop a Custom Provider in Terraform](https://www.infracloud.io/blogs/developing-terraform-custom-provider/). Deprecated link but helps understanding local testing of custom providers. Therefore consider section `Steps to copy provider executable to plugins directory`.
+- [How to develop/ test existing provider locally?](https://github.com/hashicorp/terraform-provider-aws/issues/5396)
 - [terraform-provider-klayer Github repository](https://github.com/ldcorentin/terraform-provider-klayer). **13-01-2023** - Latest practical example
 - [https://developer.hashicorp.com/terraform/plugin/sdkv2?collectionSlug=providers&productSlug=terraform](https://developer.hashicorp.com/terraform/plugin/sdkv2). Latest hashicorp documentation on Terraform Plugin SDKv2 for writing custom providers.
 
@@ -33,9 +33,15 @@ On Windows Unix systems run:
 go build -o terraform-provider-mgtt
 ```
 
-### Copy provider executable to plugins directory
+### Copy provider executable to plugins directory for testing hcl files
 
-Refer to section `Steps to copy provider executable to plugins directory` of [How to Develop a Custom Provider in Terraform](https://www.infracloud.io/blogs/developing-terraform-custom-provider/).
+Refer to [How to develop/ test existing provider locally?](https://github.com/hashicorp/terraform-provider-aws/issues/5396).
+
+Navigate to:
+
+```sh
+cd terraform
+```
 
 On modern Windows OS with amd64 CPU architecture run:
 
