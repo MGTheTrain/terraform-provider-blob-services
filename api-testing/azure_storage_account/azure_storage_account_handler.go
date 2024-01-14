@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -11,10 +12,11 @@ import (
 )
 
 var (
-	subscriptionID    string
-	resourceGroupName string
-	accountName       string
-	accessToken       string
+	subscriptionID      string
+	resourceGroupName   string
+	accountName         string
+	accessToken         string
+	requestBodyJsonPath string
 )
 
 func main() {
@@ -24,12 +26,13 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&resourceGroupName, "resourceGroupName", "g", "", "Your Azure resource group name")
 	rootCmd.PersistentFlags().StringVarP(&accountName, "accountName", "a", "", "Your Azure Storage account name")
 	rootCmd.PersistentFlags().StringVarP(&accessToken, "accessToken", "t", "", "Your Bearer access token")
+	rootCmd.PersistentFlags().StringVarP(&requestBodyJsonPath, "requestBodyJsonPath", "r", "", "The request body json path")
 
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "manage",
 		Short: "Manage Azure Storage Account",
 		Run: func(cmd *cobra.Command, args []string) {
-			handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
+			handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyJsonPath)
 		},
 	})
 
@@ -40,7 +43,7 @@ func main() {
 }
 
 // handleAzureStorageAccount handles the Azure Storage Account management.
-func handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) {
+func handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyJsonPath string) {
 	fmt.Printf("Subscription ID: %s\n", subscriptionID)
 	fmt.Printf("Resource Group Name: %s\n", resourceGroupName)
 	fmt.Printf("Storage Account Name: %s\n", accountName)
@@ -51,31 +54,32 @@ func handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, a
 		return
 	}
 
-	err := submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessToken)
+	err := submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyJsonPath)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
 }
 
 // submitHTTPRequest submits an HTTP request to Azure Storage Account.
-func submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessToken string) error {
+func submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyJsonPath string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2018-02-01",
 		subscriptionID, resourceGroupName, accountName)
 
-	requestBody := map[string]interface{}{
-		"sku": map[string]string{
-			"name": "Standard_LRS",
-		},
-		"kind":     "BlobStorage",
-		"location": "westeu",
-	}
-
-	jsonBody, err := json.Marshal(requestBody)
+	jsonFile, err := os.Open(requestBodyJsonPath) // e.g. assets/azure_storage_account_request_body.json
 	if err != nil {
-		return fmt.Errorf("Error encoding JSON: %v", err)
+		return fmt.Errorf("Error opening JSON file:", err)
+	}
+	defer jsonFile.Close()
+
+	jsonRequestBodyContent, _ := ioutil.ReadAll(jsonFile)
+
+	var jsonBody map[string]interface{}
+	err = json.Unmarshal(jsonRequestBodyContent, &jsonBody)
+	if err != nil {
+		return fmt.Errorf("Error decoding JSON:", err)
 	}
 
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonRequestBodyContent))
 	if err != nil {
 		return fmt.Errorf("Error creating request: %v", err)
 	}
