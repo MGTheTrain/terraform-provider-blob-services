@@ -1,6 +1,8 @@
 go.sum
 build/**
 terraform-provider-mgtt**
+azure_storage_account_handler**
+*exe
 lock.json
 terraform.tfstate**
 crash.log
