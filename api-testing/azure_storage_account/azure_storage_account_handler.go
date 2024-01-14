@@ -64,10 +64,10 @@ func submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessTok
 
 	requestBody := map[string]interface{}{
 		"sku": map[string]string{
-			"name": "Standard_GRS",
+			"name": "Standard_LRS",
 		},
-		"kind":     "StorageV2",
-		"location": "eastus2",
+		"kind":     "BlobStorage",
+		"location": "westeu",
 	}
 
 	jsonBody, err := json.Marshal(requestBody)

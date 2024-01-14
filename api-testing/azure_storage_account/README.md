@@ -16,6 +16,10 @@ Cli applcation for managing Azure storage account services and Azure storage acc
 
 ## How to use
 
+### Preconditions
+
+You need an Azure subscription, and you must have Owner permissions for that subscription. Optionally you can utilize a service principal.
+
 ### Authenticate with az cli
 
 If multi-factor authentication is enabled run following:
