@@ -26,7 +26,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&resourceGroupName, "resourceGroupName", "g", "", "Your Azure resource group name")
 	rootCmd.PersistentFlags().StringVarP(&accountName, "accountName", "a", "", "Your Azure Storage account name")
 	rootCmd.PersistentFlags().StringVarP(&accessToken, "accessToken", "t", "", "Your Bearer access token")
-	rootCmd.PersistentFlags().StringVarP(&requestBodyFile, "requestBodyFile", "r", "", "Path to JSON file containing the request body")
+	rootCmd.PersistentFlags().StringVarP(&requestBodyFile, "requestBodyFile", "r", "assets/create_azure_storage_account_request_body.json", "Path to JSON file containing the request body")
 
 	// Create a new storage_account command
 	storageAccountCmd := &cobra.Command{

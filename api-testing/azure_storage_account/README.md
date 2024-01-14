@@ -59,14 +59,17 @@ On Unix systems (MacOS or Ubuntu >=18.04/debian >=11):
 
 ### Run the cli application
 
-On Windows OS:
-
 ```sh
-.\azure_storage_account_handler.exe manage -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
-```
+# [C]reate a storage account service
+# Adjust the `assets/create_azure_storage_account_request_body.json` file
+azure_storage_account_handler storage_account create -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
 
-On Unix systems (MacOS or Ubuntu >=18.04/debian >=11):
+# [R]ead
+# TBD
 
-```sh
-azure_storage_account_handler manage -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
+# [U]pdate
+# TBD
+
+# [D]elete
+azure_storage_account_handler storage_account delete -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
 ```
