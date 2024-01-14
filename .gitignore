@@ -2,5 +2,5 @@ go.sum
 build/**
 terraform-provider-mgtt**
 lock.json
-terraform.tfstate
+terraform.tfstate**
 crash.log
