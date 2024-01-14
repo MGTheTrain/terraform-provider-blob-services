@@ -24,9 +24,7 @@ If multi-factor authentication is enabled run following:
 az login --tenant <your tenant id>
 ```
 
-A browser window pops-up. Provide your login in order to authenticate against authentication Microsoft provider.
-
-Optionally 
+A browser window will appear, prompting you to log in with the Microsoft authentication provider. Optionally utilize a service principal.
 
 ### Display your bearer token after successfull authentication
 
