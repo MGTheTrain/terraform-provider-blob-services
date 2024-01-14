@@ -17,7 +17,6 @@ var (
 	accessToken       string
 )
 
-// Create an Azure Storage account with the REST API: https://learn.microsoft.com/en-us/rest/api/storagerp/storage-sample-create-account
 func main() {
 	var rootCmd = &cobra.Command{Use: "azure_storage_account_handler"}
 
