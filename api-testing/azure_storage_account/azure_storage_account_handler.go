@@ -59,7 +59,6 @@ func handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, a
 }
 
 // submitHTTPRequest submits an HTTP request to Azure Storage Account.
-// Create an Azure Storage account with the REST API: https://learn.microsoft.com/en-us/rest/api/storagerp/storage-sample-create-account
 func submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessToken string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2018-02-01",
 		subscriptionID, resourceGroupName, accountName)
