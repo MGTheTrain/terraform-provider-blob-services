@@ -6,3 +6,4 @@ azure_storage_account_handler**
 lock.json
 terraform.tfstate**
 crash.log
+secrets*
