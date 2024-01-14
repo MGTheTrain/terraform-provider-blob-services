@@ -19,7 +19,7 @@ Cli applcation for managing Azure storage account services and Azure storage acc
 
 ### Preconditions
 
-You need an Azure subscription, and you must have Owner permissions for that subscription. Optionally you can utilize a service principal.
+You need an Azure subscription, and you must have Owner permissions for that subscription. Optionally you can utilize a service principal. You also need to [install the az cli tool](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
 
 ### Authenticate with az cli
 
