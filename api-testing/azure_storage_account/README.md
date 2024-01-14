@@ -28,7 +28,13 @@ If multi-factor authentication is enabled run following:
 az login --tenant <your tenant id>
 ```
 
-A browser window will appear, prompting you to log in with the Microsoft authentication provider. Optionally utilize a service principal.
+A browser window will appear, prompting you to log in with the Microsoft authentication provider. 
+
+Optionally utilize a service principal and authenticate in a terminal with:
+
+```sh
+az login --service-principal -u <your service principal client id> -p <your service principal client secret> --tenant <your tenant id>
+```
 
 ### Display your bearer token after successfull authentication
 
