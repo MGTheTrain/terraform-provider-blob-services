@@ -13,6 +13,7 @@ Cli applcation for managing Azure storage account services and Azure storage acc
 ## References
 
 - [Create an Azure Storage account with the REST API](https://learn.microsoft.com/en-us/rest/api/storagerp/storage-sample-create-account)
+- [Storage Accounts API documentation](https://learn.microsoft.com/en-us/rest/api/storagerp/storage-accounts)
 
 ## How to use
 
