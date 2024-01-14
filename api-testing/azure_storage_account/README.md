@@ -58,7 +58,7 @@ On Unix systems (MacOS or Ubuntu >=18.04/debian >=11):
 
 ### Run the cli application
 
-On Windows systems:
+On Windows OS:
 
 ```sh
 .\azure_storage_account_handler.exe manage -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
