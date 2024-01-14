@@ -16,25 +16,43 @@ var (
 	resourceGroupName string
 	accountName       string
 	accessToken       string
-	reqBodyJsonFile   string
+	requestBodyFile   string
 )
 
 func main() {
 	var rootCmd = &cobra.Command{Use: "azure_storage_account_handler"}
 
-	rootCmd.PersistentFlags().StringVarP(&subscriptionID, "subscription_id", "s", "", "Your Azure subscription ID")
-	rootCmd.PersistentFlags().StringVarP(&resourceGroupName, "resource_group_name", "g", "", "Your Azure resource group name")
-	rootCmd.PersistentFlags().StringVarP(&accountName, "account_name", "a", "", "Your Azure Storage account name")
-	rootCmd.PersistentFlags().StringVarP(&accessToken, "access_token", "t", "", "Your Bearer access token")
-	rootCmd.PersistentFlags().StringVarP(&reqBodyJsonFile, "req_body_json_file", "r", "", "The request body json file. E.g. assets/azure_storage_account_request_body.json")
+	rootCmd.PersistentFlags().StringVarP(&subscriptionID, "subscriptionID", "s", "", "Your Azure subscription ID")
+	rootCmd.PersistentFlags().StringVarP(&resourceGroupName, "resourceGroupName", "g", "", "Your Azure resource group name")
+	rootCmd.PersistentFlags().StringVarP(&accountName, "accountName", "a", "", "Your Azure Storage account name")
+	rootCmd.PersistentFlags().StringVarP(&accessToken, "accessToken", "t", "", "Your Bearer access token")
+	rootCmd.PersistentFlags().StringVarP(&requestBodyFile, "requestBodyFile", "r", "", "Path to JSON file containing the request body")
 
-	rootCmd.AddCommand(&cobra.Command{
-		Use:   "manage",
+	// Create a new storage_account command
+	storageAccountCmd := &cobra.Command{
+		Use:   "storage_account",
 		Short: "Manage Azure Storage Account",
+	}
+
+	// Add subcommands to the storage_account command
+	storageAccountCmd.AddCommand(&cobra.Command{
+		Use:   "delete",
+		Short: "Delete Azure Storage Account",
 		Run: func(cmd *cobra.Command, args []string) {
-			handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, reqBodyJsonFile)
+			handleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
 		},
 	})
+
+	storageAccountCmd.AddCommand(&cobra.Command{
+		Use:   "create",
+		Short: "Create Azure Storage Account",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile)
+		},
+	})
+
+	// Add storage_account command to the root command
+	rootCmd.AddCommand(storageAccountCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -42,47 +60,58 @@ func main() {
 	}
 }
 
-// handleAzureStorageAccount handles the Azure Storage Account management.
-func handleAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, reqBodyJsonFile string) {
-	fmt.Printf("Subscription ID: %s\n", subscriptionID)
-	fmt.Printf("Resource Group Name: %s\n", resourceGroupName)
-	fmt.Printf("Storage Account Name: %s\n", accountName)
-	fmt.Printf("Access Token: %s\n", accessToken)
-	fmt.Printf("Json Request Body File: %s\n", reqBodyJsonFile)
+func handleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile string) {
+	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
+		subscriptionID, resourceGroupName, accountName)
 
-	if subscriptionID == "" || resourceGroupName == "" || accountName == "" || accessToken == "" || reqBodyJsonFile == "" {
-		fmt.Println("Usage: azure_storage_account_handler manage -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>")
+	requestBody, err := readRequestBodyFromFile(requestBodyFile)
+	if err != nil {
+		fmt.Println("Error reading request body:", err)
 		return
 	}
 
-	err := submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessToken, reqBodyJsonFile)
-	if err != nil {
-		fmt.Println("Error:", err)
-	}
+	sendHTTPRequest("PUT", url, requestBody, accessToken)
 }
 
-// submitHTTPRequest submits an HTTP request to Azure Storage Account.
-func submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessToken, reqBodyJsonFile string) error {
-	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2018-02-01",
+func handleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) {
+	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
 
-	jsonFile, err := os.Open(reqBodyJsonFile)
-	if err != nil {
-		return fmt.Errorf("Error opening JSON file:", err)
-	}
-	defer jsonFile.Close()
+	sendHTTPRequest("DELETE", url, nil, accessToken)
+}
 
-	jsonRequestBodyContent, _ := ioutil.ReadAll(jsonFile)
-
-	var jsonBody map[string]interface{}
-	err = json.Unmarshal(jsonRequestBodyContent, &jsonBody)
+func readRequestBodyFromFile(filePath string) (map[string]interface{}, error) {
+	content, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return fmt.Errorf("Error decoding JSON:", err)
+		return nil, err
 	}
 
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonRequestBodyContent))
+	var requestBody map[string]interface{}
+	if err := json.Unmarshal(content, &requestBody); err != nil {
+		return nil, err
+	}
+
+	return requestBody, nil
+}
+
+func sendHTTPRequest(method, url string, requestBody map[string]interface{}, accessToken string) {
+	var req *http.Request
+	var err error
+
+	if requestBody != nil {
+		jsonBody, err := json.Marshal(requestBody)
+		if err != nil {
+			fmt.Println("Error encoding JSON:", err)
+			return
+		}
+		req, err = http.NewRequest(method, url, bytes.NewBuffer(jsonBody))
+	} else {
+		req, err = http.NewRequest(method, url, nil)
+	}
+
 	if err != nil {
-		return fmt.Errorf("Error creating request: %v", err)
+		fmt.Println("Error creating request:", err)
+		return
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -91,7 +120,8 @@ func submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessTok
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("Error making request: %v", err)
+		fmt.Println("Error making request:", err)
+		return
 	}
 	defer resp.Body.Close()
 
@@ -100,6 +130,4 @@ func submitHTTPRequest(subscriptionID, resourceGroupName, accountName, accessTok
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
 	fmt.Println(buf.String())
-
-	return nil
 }
