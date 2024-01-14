@@ -28,11 +28,25 @@ A browser window will appear, prompting you to log in with the Microsoft authent
 
 ### Display your bearer token after successfull authentication
 
-
 ```sh 
-az account get-access-token --resource=https://management.azure.com
+az account get-access-token --resource https://graph.microsoft.com
+```
+
+### Build the cli application
+
+On Windows OS:
+
+```sh
+ go build -o azure_storage_account_handler.exe
+```
+
+On Unix systems (MacOS or Ubuntu >=18.04/debian >=11):
+
+```sh
+ go build -o azure_storage_account_handler
 ```
 
 ### Run the cli application
 
 TBD
+
