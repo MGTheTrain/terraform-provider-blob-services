@@ -39,7 +39,7 @@ az login --service-principal -u <your service principal client id> -p <your serv
 ### Display your bearer token after successfull authentication
 
 ```sh 
-az account get-access-token --resource https://graph.microsoft.com
+az account get-access-token 
 ```
 
 ### Build the cli application
