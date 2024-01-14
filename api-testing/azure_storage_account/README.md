@@ -71,5 +71,5 @@ azure_storage_account_handler storage_account create -s <subscription_id> -g <re
 # TBD
 
 # [D]elete
-azure_storage_account_handler storage_account delete -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
+azure_storage_account_handler storage_account delete -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> 
 ```
