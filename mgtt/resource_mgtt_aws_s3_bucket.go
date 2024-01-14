@@ -21,6 +21,9 @@ func resourceMgttAwsS3Bucket() *schema.Resource {
 }
 
 func resourceMgttAwsS3BucketCreate(d *schema.ResourceData, m interface{}) error {
+	name := d.Get("name").(string)
+	d.Set("name", name)
+	d.SetId(name)
 	return nil
 }
 
