@@ -1,8 +1,9 @@
 {
     "sku": {
-        "name": "Standard_LRS"
+        "name": "Standard_LRS",
+        "tier": "Standard"
     },
-    "kind": "BlobStorage",
-    "location": "westeu"
+    "kind": "StorageV2",
+    "location": "West Europe"
 }
   
