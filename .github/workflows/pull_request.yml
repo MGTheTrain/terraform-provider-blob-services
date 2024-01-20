@@ -1,0 +1,18 @@
+name: Run scans and tests on Go repos
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  ci-ct-job-for-go-repos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Test Go repository
+        uses: MGTheTrain/public-github-actions/.github/actions/test-go-repository@main
+        with:
+          TEST_WORKING_DIRECTORY: ./mgtt/test
