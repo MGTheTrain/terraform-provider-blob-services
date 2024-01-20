@@ -29,8 +29,12 @@ func resourceMgttAzurermRg() *schema.Resource {
 func resourceMgttAzurermRgCreate(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
 	location := d.Get("location").(string)
-	d.Set("name", name)
-	d.Set("location", location)
+	if err := d.Set("name", name); err != nil {
+		return err
+	}
+	if err := d.Set("location", location); err != nil {
+		return err
+	}
 	d.SetId(fmt.Sprintf("%s-%s", name, location))
 	return nil
 }

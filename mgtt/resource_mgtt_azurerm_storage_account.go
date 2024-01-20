@@ -22,7 +22,9 @@ func resourceMgttAzurermStorageAccount() *schema.Resource {
 
 func resourceMgttAzurermStorageAccountCreate(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
-	d.Set("name", name)
+	if err := d.Set("name", name); err != nil {
+		return err
+	}
 	d.SetId(name)
 	return nil
 }
