@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@master
       - name: Auto-formatting Go files
-        uses: MGTheTrain/public-github-actions/.github/actions/auto-formatting-for-go@main
+        uses: MGTheTrain/public-github-actions/.github/actions/linting-and-auto-formatting-for-go@main
         with:
           WORKING_DIRECTORY: ./
           GH_TOKEN: ${{ inputs.GH_TOKEN }}
