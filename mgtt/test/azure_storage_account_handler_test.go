@@ -4,10 +4,11 @@ import (
 	"os"
 	"testing"
 
+	"github.com/MGTheTrain/terraform-provider-blob-services/mgtt"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAzureStorageHandler(t *testing.T) {
+func TestAzureStorageAccountHandler(t *testing.T) {
 	// Read parameters from environment variables
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	resourceGroupName := os.Getenv("AZURE_RESOURCE_GROUP_NAME")
@@ -18,8 +19,8 @@ func TestAzureStorageHandler(t *testing.T) {
 		t.Fatal("Missing required environment variables")
 	}
 
-	// Create a new instance of AzureStorageHandler
-	handler := NewAzureStorageHandler()
+	// Create a new instance of AzureStorageAccountHandler
+	handler := mgtt.NewAzureStorageAccountHandler()
 
 	// Example request body for PUT operation
 	createRequestBody := `{
