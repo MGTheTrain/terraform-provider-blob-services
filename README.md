@@ -56,7 +56,7 @@ On modern Windows OS with amd64 CPU architecture run:
 
 ```sh
 mkdir terraform.d\plugins\windows_amd64\
-cp terraform-provider-mgtt.exe terraform.d\plugins\windows_amd64\
+cp ..\terraform-provider-mgtt.exe terraform.d\plugins\windows_amd64\
 ```
 
 On Unix systems run:
@@ -64,11 +64,11 @@ On Unix systems run:
 ```sh
 # Linux Ubuntu >=18.04 or debian >=11 with amd64 CPU architecture
 mkdir -vp terraform.d/plugins/linux_amd64/
-cp terraform-provider-mgtt terraform.d/plugins/linux_amd64/
+cp ../terraform-provider-mgtt terraform.d/plugins/linux_amd64/
 
 # MacOS with amd64 CPU architecture 
 mkdir -vp terraform.d/plugins/darwin_amd64/
-cp terraform-provider-mgtt terraform.d/plugins/darwin_amd64/
+cp ../terraform-provider-mgtt terraform.d/plugins/darwin_amd64/
 ```
 
 ### Test provider executable with hcl files and terraform commands
