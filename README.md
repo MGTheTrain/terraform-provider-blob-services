@@ -21,7 +21,10 @@ Sample repository implementing a terraform provider designed for managing blob s
 
 ### In order to run tests
 
+Create from the [secrets.template.cfg](./templates/secrets.template.cfg) a secrets.cfg file in the project root directory and replace the `PLACEHOLDER_*` values. Some [tests](./mgtt/test/) export the environment variables trough the secrets.cfg file.
+
 ```sh
+source secrets.cfg
 go test ./...
 ```
 

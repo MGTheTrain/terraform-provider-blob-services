@@ -5,4 +5,4 @@ terraform-provider-mgtt**
 lock.json
 terraform.tfstate**
 crash.log
-secrets*
+secrets.cfg
