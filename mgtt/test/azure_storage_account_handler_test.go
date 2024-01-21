@@ -20,7 +20,7 @@ func TestAzureStorageAccountHandler(t *testing.T) {
 	}
 
 	// Create a new instance of AzureStorageAccountHandler
-	handler := mgtt.NewAzureStorageAccountHandler()
+	handler := mgtt.NewAzureStorageAccountHandler(subscriptionID, accessToken)
 
 	// Example request body for PUT operation
 	createRequestBody := `{
@@ -47,18 +47,18 @@ func TestAzureStorageAccountHandler(t *testing.T) {
 	}`
 
 	// Test PUT operation
-	err := handler.CreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, createRequestBody)
+	err := handler.CreateAzureStorageAccount(resourceGroupName, accountName, createRequestBody)
 	assert.NoError(t, err, "CreateAzureStorageAccount should not return an error")
 
 	// Test PATCH operation
-	err = handler.UpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, updateRequestBody)
+	err = handler.UpdateAzureStorageAccount(resourceGroupName, accountName, updateRequestBody)
 	assert.NoError(t, err, "UpdateAzureStorageAccount should not return an error")
 
 	// Test GET operation
-	err = handler.GetAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
+	err = handler.GetAzureStorageAccount(resourceGroupName, accountName)
 	assert.NoError(t, err, "GetAzureStorageAccount should not return an error")
 
 	// Test DELETE operation
-	err = handler.DeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
+	err = handler.DeleteAzureStorageAccount(resourceGroupName, accountName)
 	assert.NoError(t, err, "DeleteAzureStorageAccount should not return an error")
 }

@@ -7,43 +7,49 @@ import (
 )
 
 // AzureStorageAccountHandler represents a manager for handling Azure Storage operations.
-type AzureStorageAccountHandler struct{}
+type AzureStorageAccountHandler struct {
+	SubscriptionID string
+	AccessToken    string
+}
 
 // NewAzureStorageAccountHandler creates a new instance of AzureStorageAccountHandler.
-func NewAzureStorageAccountHandler() *AzureStorageAccountHandler {
-	return &AzureStorageAccountHandler{}
+func NewAzureStorageAccountHandler(subscriptionID, accessToken string) *AzureStorageAccountHandler {
+	return &AzureStorageAccountHandler{
+		SubscriptionID: subscriptionID,
+		AccessToken:    accessToken,
+	}
 }
 
 // CreateAzureStorageAccount creates an Azure Storage account.
-func (m *AzureStorageAccountHandler) CreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBody string) error {
+func (m *AzureStorageAccountHandler) CreateAzureStorageAccount(resourceGroupName, accountName, requestBody string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
-		subscriptionID, resourceGroupName, accountName)
+		m.SubscriptionID, resourceGroupName, accountName)
 
-	return m.sendHTTPRequest("PUT", url, []byte(requestBody), accessToken)
+	return m.sendHTTPRequest("PUT", url, []byte(requestBody), m.AccessToken)
 }
 
 // GetAzureStorageAccount reads information about an Azure Storage account.
-func (m *AzureStorageAccountHandler) GetAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) error {
+func (m *AzureStorageAccountHandler) GetAzureStorageAccount(resourceGroupName, accountName string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
-		subscriptionID, resourceGroupName, accountName)
+		m.SubscriptionID, resourceGroupName, accountName)
 
-	return m.sendHTTPRequest("GET", url, nil, accessToken)
+	return m.sendHTTPRequest("GET", url, nil, m.AccessToken)
 }
 
 // UpdateAzureStorageAccount updates an Azure Storage account.
-func (m *AzureStorageAccountHandler) UpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBody string) error {
+func (m *AzureStorageAccountHandler) UpdateAzureStorageAccount(resourceGroupName, accountName, requestBody string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
-		subscriptionID, resourceGroupName, accountName)
+		m.SubscriptionID, resourceGroupName, accountName)
 
-	return m.sendHTTPRequest("PATCH", url, []byte(requestBody), accessToken)
+	return m.sendHTTPRequest("PATCH", url, []byte(requestBody), m.AccessToken)
 }
 
 // DeleteAzureStorageAccount deletes an Azure Storage account.
-func (m *AzureStorageAccountHandler) DeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) error {
+func (m *AzureStorageAccountHandler) DeleteAzureStorageAccount(resourceGroupName, accountName string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
-		subscriptionID, resourceGroupName, accountName)
+		m.SubscriptionID, resourceGroupName, accountName)
 
-	return m.sendHTTPRequest("DELETE", url, nil, accessToken)
+	return m.sendHTTPRequest("DELETE", url, nil, m.AccessToken)
 }
 
 // sendHTTPRequest sends an HTTP request.
