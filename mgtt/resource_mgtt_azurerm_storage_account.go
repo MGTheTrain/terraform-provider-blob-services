@@ -49,15 +49,18 @@ func resourceMgttAzurermStorageAccount() *schema.Resource {
 				Required: true,
 			},
 			"properties": &schema.Schema{
-				Type: schema.TypeMap,
+				Type:     schema.TypeMap,
+				Optional: true, // or set it to Required or Computed based on your requirements
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"keyPolicy": &schema.Schema{
-							Type: schema.TypeMap,
+							Type:     schema.TypeMap,
+							Optional: true, // or set it to Required or Computed based on your requirements
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"keyExpirationPeriodInDays": &schema.Schema{
-										Type: schema.TypeInt,
+										Type:     schema.TypeInt,
+										Optional: true, // or set it to Required or Computed based on your requirements
 									},
 								},
 							},
