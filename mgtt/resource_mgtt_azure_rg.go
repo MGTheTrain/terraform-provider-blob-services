@@ -94,9 +94,6 @@ func resourceMgttAzurermRgCreate(d *schema.ResourceData, m interface{}) error {
 	keyPolicy := properties["keyPolicy"].(map[string]interface{})
 	keyExpirationPeriodInDays := keyPolicy["keyExpirationPeriodInDays"].(int)
 
-	// Now you have all the values, and you can use them as needed
-
-	// For example, set them back to the resource state
 	if err := d.Set("name", name); err != nil {
 		return err
 	}
@@ -181,9 +178,6 @@ func resourceMgttAzurermRgUpdate(d *schema.ResourceData, m interface{}) error {
 	keyPolicy := properties["keyPolicy"].(map[string]interface{})
 	keyExpirationPeriodInDays := keyPolicy["keyExpirationPeriodInDays"].(int)
 
-	// Now you have all the values, and you can use them as needed
-
-	// For example, set them back to the resource state
 	if err := d.Set("name", name); err != nil {
 		return err
 	}
