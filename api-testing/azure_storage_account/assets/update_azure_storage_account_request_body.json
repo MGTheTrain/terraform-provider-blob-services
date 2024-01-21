@@ -1,7 +1,7 @@
 {
     "properties": {
       "keyPolicy": {
-        "keyExpirationPeriodInDays": 20
+        "keyExpirationPeriodInDays": 10
       }
     }
   }
