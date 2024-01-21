@@ -75,7 +75,7 @@ cp ../terraform-provider-mgtt.exe .terraform.d/plugins/terraform-mgtt.com/mgttpr
 
 ```sh
 cd terraform
-terraform init
+terraform.exe init -plugin-dir="./.terraform/plugins/""
 terraform plan
 terraform apply --auto-approve
 terraform destroy --auto-approve
