@@ -78,6 +78,7 @@ cp ../terraform-provider-mgtt .terraform/plugins/terraform-mgtt.com/mgttprovider
 cd terraform
 terraform init -plugin-dir="./.terraform/plugins/"
 terraform plan
+export TF_LOG=DEBUG
 terraform apply --auto-approve
 terraform destroy --auto-approve
 ```
