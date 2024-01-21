@@ -8,6 +8,44 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+func skuSchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"tier": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
+		},
+	}
+}
+
+func propertiesSchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"key_policy": &schema.Schema{
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     keyPolicySchema(),
+			},
+		},
+	}
+}
+
+func keyPolicySchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"key_expiration_period_in_days": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+		},
+	}
+}
+
 func resourceMgttAzurermStorageAccount() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceMgttAzurermStorageAccountCreate,
@@ -29,44 +67,18 @@ func resourceMgttAzurermStorageAccount() *schema.Resource {
 				Required: true,
 			},
 			"sku": &schema.Schema{
-				Type: schema.TypeMap,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"tier": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
-						},
-					},
-				},
+				Type:     schema.TypeSet,
+				Elem:     skuSchema(),
 				Required: true,
+			},
+			"properties": &schema.Schema{
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     propertiesSchema(),
 			},
 			"kind": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
-			},
-			"properties": &schema.Schema{
-				Type:     schema.TypeMap,
-				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"keyPolicy": &schema.Schema{
-							Type:     schema.TypeMap,
-							Optional: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"keyExpirationPeriodInDays": &schema.Schema{
-										Type:     schema.TypeInt,
-										Optional: true,
-									},
-								},
-							},
-						},
-					},
-				},
 			},
 		},
 	}
@@ -76,14 +88,31 @@ func resourceMgttAzurermStorageAccountCreate(d *schema.ResourceData, m interface
 	name := d.Get("name").(string)
 	resourceGroupName := d.Get("resource_group_name").(string)
 	location := d.Get("location").(string)
-	sku := d.Get("sku").(map[string]interface{})
-	skuName := sku["name"].(string)
-	skuTier := sku["tier"].(string)
 	kind := d.Get("kind").(string)
 
-	properties := d.Get("properties").(map[string]interface{})
-	keyPolicy := properties["keyPolicy"].(map[string]interface{})
-	keyExpirationPeriodInDays := keyPolicy["keyExpirationPeriodInDays"].(int)
+	skuSet := d.Get("sku").(*schema.Set)
+	skuName := ""
+	skuTier := ""
+	skuList := skuSet.List()
+	if len(skuList) > 0 {
+		skuMap := skuList[0].(map[string]interface{})
+		skuName = skuMap["name"].(string)
+		skuTier = skuMap["tier"].(string)
+		fmt.Printf("SKU Name: %s, SKU Tier: %s\n", skuName, skuTier)
+	}
+
+	propertiesSet := d.Get("properties").(*schema.Set)
+	keyExpirationPeriodInDays := 0
+	propertiesList := propertiesSet.List()
+	if len(propertiesList) > 0 {
+		propertiesMap := propertiesList[0].(map[string]interface{})
+		keyPolicySet := propertiesMap["key_policy"].(*schema.Set)
+		keyPolicyList := keyPolicySet.List()
+		if len(keyPolicyList) > 0 {
+			keyPolicyMap := keyPolicyList[0].(map[string]interface{})
+			keyExpirationPeriodInDays = keyPolicyMap["key_expiration_period_in_days"].(int)
+		}
+	}
 
 	if err := d.Set("name", name); err != nil {
 		return err
@@ -158,14 +187,31 @@ func resourceMgttAzurermStorageAccountUpdate(d *schema.ResourceData, m interface
 	name := d.Get("name").(string)
 	resourceGroupName := d.Get("resource_group_name").(string)
 	location := d.Get("location").(string)
-	sku := d.Get("sku").(map[string]interface{})
-	skuName := sku["name"].(string)
-	skuTier := sku["tier"].(string)
 	kind := d.Get("kind").(string)
 
-	properties := d.Get("properties").(map[string]interface{})
-	keyPolicy := properties["keyPolicy"].(map[string]interface{})
-	keyExpirationPeriodInDays := keyPolicy["keyExpirationPeriodInDays"].(int)
+	skuSet := d.Get("sku").(*schema.Set)
+	skuName := ""
+	skuTier := ""
+	skuList := skuSet.List()
+	if len(skuList) > 0 {
+		skuMap := skuList[0].(map[string]interface{})
+		skuName = skuMap["name"].(string)
+		skuTier = skuMap["tier"].(string)
+		fmt.Printf("SKU Name: %s, SKU Tier: %s\n", skuName, skuTier)
+	}
+
+	propertiesSet := d.Get("properties").(*schema.Set)
+	keyExpirationPeriodInDays := 0
+	propertiesList := propertiesSet.List()
+	if len(propertiesList) > 0 {
+		propertiesMap := propertiesList[0].(map[string]interface{})
+		keyPolicySet := propertiesMap["key_policy"].(*schema.Set)
+		keyPolicyList := keyPolicySet.List()
+		if len(keyPolicyList) > 0 {
+			keyPolicyMap := keyPolicyList[0].(map[string]interface{})
+			keyExpirationPeriodInDays = keyPolicyMap["key_expiration_period_in_days"].(int)
+		}
+	}
 
 	if err := d.Set("name", name); err != nil {
 		return err
