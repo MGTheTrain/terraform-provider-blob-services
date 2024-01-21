@@ -81,7 +81,6 @@ func handleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountN
 	sendHTTPRequest("PUT", url, requestBody, accessToken)
 }
 
-// [U]pdate
 func handleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile string) {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
@@ -95,7 +94,6 @@ func handleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountN
 	sendHTTPRequest("PATCH", url, requestBody, accessToken)
 }
 
-// [D]elete
 func handleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
