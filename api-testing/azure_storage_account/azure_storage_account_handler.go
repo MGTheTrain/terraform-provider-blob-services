@@ -36,6 +36,14 @@ func main() {
 
 	// Add subcommands to the storage_account command
 	storageAccountCmd.AddCommand(&cobra.Command{
+		Use:   "create",
+		Short: "Create Azure Storage Account",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile)
+		},
+	})
+
+	storageAccountCmd.AddCommand(&cobra.Command{
 		Use:   "delete",
 		Short: "Delete Azure Storage Account",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -44,10 +52,10 @@ func main() {
 	})
 
 	storageAccountCmd.AddCommand(&cobra.Command{
-		Use:   "create",
-		Short: "Create Azure Storage Account",
+		Use:   "update",
+		Short: "Update Azure Storage Account",
 		Run: func(cmd *cobra.Command, args []string) {
-			handleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile)
+			handleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile)
 		},
 	})
 
@@ -73,6 +81,21 @@ func handleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountN
 	sendHTTPRequest("PUT", url, requestBody, accessToken)
 }
 
+// [U]pdate
+func handleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile string) {
+	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
+		subscriptionID, resourceGroupName, accountName)
+
+	requestBody, err := readRequestBodyFromFile(requestBodyFile)
+	if err != nil {
+		fmt.Println("Error reading request body:", err)
+		return
+	}
+
+	sendHTTPRequest("PATCH", url, requestBody, accessToken)
+}
+
+// [D]elete
 func handleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
