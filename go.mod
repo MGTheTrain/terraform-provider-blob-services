@@ -3,6 +3,7 @@ module github.com/MGTheTrain/terraform-provider-mgtt
 go 1.21.3
 
 require (
+	github.com/google/uuid v1.3.1
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
 	github.com/stretchr/testify v1.7.2
 )
