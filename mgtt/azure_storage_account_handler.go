@@ -6,48 +6,48 @@ import (
 	"net/http"
 )
 
-// AzureStorageManager represents a manager for handling Azure Storage operations.
-type AzureStorageManager struct{}
+// AzureStorageAccountHandler represents a manager for handling Azure Storage operations.
+type AzureStorageAccountHandler struct{}
 
-// NewAzureStorageManager creates a new instance of AzureStorageManager.
-func NewAzureStorageManager() *AzureStorageManager {
-	return &AzureStorageManager{}
+// NewAzureStorageAccountHandler creates a new instance of AzureStorageAccountHandler.
+func NewAzureStorageAccountHandler() *AzureStorageAccountHandler {
+	return &AzureStorageAccountHandler{}
 }
 
-// HandleCreateAzureStorageAccount creates an Azure Storage account.
-func (m *AzureStorageManager) HandleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBody string) {
+// CreateAzureStorageAccount creates an Azure Storage account.
+func (m *AzureStorageAccountHandler) CreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBody string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
 
-	m.sendHTTPRequest("PUT", url, []byte(requestBody), accessToken)
+	return m.sendHTTPRequest("PUT", url, []byte(requestBody), accessToken)
 }
 
-// HandleReadAzureStorageAccount reads information about an Azure Storage account.
-func (m *AzureStorageManager) HandleReadAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) {
+// GetAzureStorageAccount reads information about an Azure Storage account.
+func (m *AzureStorageAccountHandler) GetAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
 
-	m.sendHTTPRequest("GET", url, nil, accessToken)
+	return m.sendHTTPRequest("GET", url, nil, accessToken)
 }
 
-// HandleUpdateAzureStorageAccount updates an Azure Storage account.
-func (m *AzureStorageManager) HandleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBody string) {
+// UpdateAzureStorageAccount updates an Azure Storage account.
+func (m *AzureStorageAccountHandler) UpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBody string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
 
-	m.sendHTTPRequest("PATCH", url, []byte(requestBody), accessToken)
+	return m.sendHTTPRequest("PATCH", url, []byte(requestBody), accessToken)
 }
 
-// HandleDeleteAzureStorageAccount deletes an Azure Storage account.
-func (m *AzureStorageManager) HandleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) {
+// DeleteAzureStorageAccount deletes an Azure Storage account.
+func (m *AzureStorageAccountHandler) DeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		subscriptionID, resourceGroupName, accountName)
 
-	m.sendHTTPRequest("DELETE", url, nil, accessToken)
+	return m.sendHTTPRequest("DELETE", url, nil, accessToken)
 }
 
 // sendHTTPRequest sends an HTTP request.
-func (m *AzureStorageManager) sendHTTPRequest(method, url string, requestBody []byte, accessToken string) {
+func (m *AzureStorageAccountHandler) sendHTTPRequest(method, url string, requestBody []byte, accessToken string) error {
 	var req *http.Request
 	var err error
 
@@ -58,8 +58,7 @@ func (m *AzureStorageManager) sendHTTPRequest(method, url string, requestBody []
 	}
 
 	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return
+		return fmt.Errorf("Error creating request:", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -68,8 +67,7 @@ func (m *AzureStorageManager) sendHTTPRequest(method, url string, requestBody []
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error making request:", err)
-		return
+		return fmt.Errorf("Error making request:", err)
 	}
 	defer resp.Body.Close()
 
@@ -78,4 +76,6 @@ func (m *AzureStorageManager) sendHTTPRequest(method, url string, requestBody []
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
 	fmt.Println(buf.String())
+
+	return nil
 }
