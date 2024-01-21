@@ -65,18 +65,18 @@ On Unix systems run:
 ```sh
 # Linux Ubuntu >=18.04 or debian >=11 with amd64 CPU architecture
 mkdir -p .terraform/plugins/terraform-mgtt.com/mgttprovider/mgtt/1.0.0/linux_amd64
-cp ../terraform-provider-mgtt.exe .terraform/plugins/terraform-mgtt.com/mgttprovider/mgtt/1.0.0/linux_amd64
+cp ../terraform-provider-mgtt .terraform/plugins/terraform-mgtt.com/mgttprovider/mgtt/1.0.0/linux_amd64
 
 # MacOS with amd64 CPU architecture 
 mkdir -p .terraform/plugins/terraform-mgtt.com/mgttprovider/mgtt/1.0.0/darwin_amd64
-cp ../terraform-provider-mgtt.exe .terraform/plugins/terraform-mgtt.com/mgttprovider/mgtt/1.0.0/darwin_amd64
+cp ../terraform-provider-mgtt .terraform/plugins/terraform-mgtt.com/mgttprovider/mgtt/1.0.0/darwin_amd64
 ```
 
 ### Test provider executable with hcl files and terraform commands
 
 ```sh
 cd terraform
-terraform.exe init -plugin-dir="./.terraform/plugins/"
+terraform init -plugin-dir="./.terraform/plugins/"
 terraform plan
 terraform apply --auto-approve
 terraform destroy --auto-approve
