@@ -21,6 +21,11 @@ func resourceMgttAzurermStorageAccountContainer() *schema.Resource {
 }
 
 func resourceMgttAzurermStorageAccountContainerCreate(d *schema.ResourceData, m interface{}) error {
+	name := d.Get("name").(string)
+	if err := d.Set("name", name); err != nil {
+		return err
+	}
+	d.SetId(name)
 	return nil
 }
 
