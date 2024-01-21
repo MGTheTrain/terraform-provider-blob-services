@@ -58,7 +58,7 @@ func (m *AzureStorageAccountHandler) sendHTTPRequest(method, url string, request
 	}
 
 	if err != nil {
-		return fmt.Errorf("Error creating request:", err)
+		return fmt.Errorf("Error creating request:  %s", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -67,7 +67,7 @@ func (m *AzureStorageAccountHandler) sendHTTPRequest(method, url string, request
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("Error making request:", err)
+		return fmt.Errorf("Error making request  %s:", err)
 	}
 	defer resp.Body.Close()
 
