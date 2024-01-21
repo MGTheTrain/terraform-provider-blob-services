@@ -16,6 +16,7 @@ Sample repository implementing a terraform provider designed for managing blob s
 - [How to develop/ test existing provider locally?](https://github.com/hashicorp/terraform-provider-aws/issues/5396)
 - [terraform-provider-klayer Github repository](https://github.com/ldcorentin/terraform-provider-klayer). **13-01-2023** - Latest practical example
 - [https://developer.hashicorp.com/terraform/plugin/sdkv2?collectionSlug=providers&productSlug=terraform](https://developer.hashicorp.com/terraform/plugin/sdkv2). Latest hashicorp documentation on Terraform Plugin SDKv2 for writing custom providers.
+- [Schema Attributes and Types](https://developer.hashicorp.com/terraform/plugin/sdkv2/schemas/schema-types). Check section on `TypeSet`.
 
 ## How to use
 
