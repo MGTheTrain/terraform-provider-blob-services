@@ -78,6 +78,7 @@ cp ../terraform-provider-mgtt .terraform/plugins/terraform-mgtt.com/mgttprovider
 cd terraform
 terraform init -plugin-dir="./.terraform/plugins/"
 terraform plan
+# It is important to set the the log level before applying `teraform apply` or `teraform destroy` 
 export TF_LOG=DEBUG
 terraform apply --auto-approve
 terraform destroy --auto-approve
