@@ -10,10 +10,10 @@ import (
 
 func resourceMgttAzurermStorageAccountContainer() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceMgttAzurermRgCreate,
-		Read:   resourceMgttAzurermRgRead,
-		Update: resourceMgttAzurermRgUpdate,
-		Delete: resourceMgttAzurermRgDelete,
+		Create: resourceMgttAzurermStorageAccountContainerCreate,
+		Read:   resourceMgttAzurermStorageAccountContainerRead,
+		Update: resourceMgttAzurermStorageAccountContainerUpdate,
+		Delete: resourceMgttAzurermStorageAccountContainerDelete,
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
@@ -119,7 +119,7 @@ func resourceMgttAzurermStorageAccountContainerCreate(d *schema.ResourceData, m 
 	}
 
 	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
-	jsonString, err := convertMapToJSON(createRequestBody)
+	jsonString, err := ConvertMapToJSON(createRequestBody)
 	if err != nil {
 		return fmt.Errorf("Error converting map to JSON: %s", err)
 	}
@@ -197,7 +197,7 @@ func resourceMgttAzurermStorageAccountContainerUpdate(d *schema.ResourceData, m 
 	}
 
 	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
-	jsonString, err := convertMapToJSON(createRequestBody)
+	jsonString, err := ConvertMapToJSON(createRequestBody)
 	if err != nil {
 		return fmt.Errorf("Error converting map to JSON: %s", err)
 	}

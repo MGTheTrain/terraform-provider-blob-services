@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func convertMapToJSON(input map[string]interface{}) (string, error) {
+func ConvertMapToJSON(input map[string]interface{}) (string, error) {
 	jsonBytes, err := json.Marshal(input)
 	if err != nil {
 		return "", err
