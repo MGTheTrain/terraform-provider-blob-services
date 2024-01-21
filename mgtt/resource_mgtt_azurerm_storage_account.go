@@ -50,17 +50,17 @@ func resourceMgttAzurermStorageAccount() *schema.Resource {
 			},
 			"properties": &schema.Schema{
 				Type:     schema.TypeMap,
-				Optional: true, // or set it to Required or Computed based on your requirements
+				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"keyPolicy": &schema.Schema{
 							Type:     schema.TypeMap,
-							Optional: true, // or set it to Required or Computed based on your requirements
+							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"keyExpirationPeriodInDays": &schema.Schema{
 										Type:     schema.TypeInt,
-										Optional: true, // or set it to Required or Computed based on your requirements
+										Optional: true,
 									},
 								},
 							},
@@ -106,6 +106,7 @@ func resourceMgttAzurermStorageAccountCreate(d *schema.ResourceData, m interface
 
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
+	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
 
 	createRequestBody := map[string]interface{}{
 		"sku": map[string]interface{}{
@@ -121,7 +122,6 @@ func resourceMgttAzurermStorageAccountCreate(d *schema.ResourceData, m interface
 		},
 	}
 
-	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
 	jsonString, err := ConvertMapToJSON(createRequestBody)
 	if err != nil {
 		return fmt.Errorf("Error converting map to JSON: %s", err)
@@ -144,8 +144,8 @@ func resourceMgttAzurermStorageAccountRead(d *schema.ResourceData, m interface{}
 
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-
 	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
+
 	err := azureStorageAccountHandler.GetAzureStorageAccount(resourceGroupName, name)
 
 	if err != nil {
@@ -188,6 +188,7 @@ func resourceMgttAzurermStorageAccountUpdate(d *schema.ResourceData, m interface
 
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
+	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
 
 	createRequestBody := map[string]interface{}{
 		"properties": map[string]interface{}{
@@ -197,7 +198,6 @@ func resourceMgttAzurermStorageAccountUpdate(d *schema.ResourceData, m interface
 		},
 	}
 
-	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
 	jsonString, err := ConvertMapToJSON(createRequestBody)
 	if err != nil {
 		return fmt.Errorf("Error converting map to JSON: %s", err)
@@ -217,8 +217,8 @@ func resourceMgttAzurermStorageAccountDelete(d *schema.ResourceData, m interface
 
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-
 	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
+
 	err := azureStorageAccountHandler.DeleteAzureStorageAccount(resourceGroupName, name)
 
 	if err != nil {
