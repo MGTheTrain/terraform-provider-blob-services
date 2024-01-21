@@ -44,18 +44,18 @@ func main() {
 	})
 
 	storageAccountCmd.AddCommand(&cobra.Command{
-		Use:   "delete",
-		Short: "Delete Azure Storage Account",
-		Run: func(cmd *cobra.Command, args []string) {
-			handleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
-		},
-	})
-
-	storageAccountCmd.AddCommand(&cobra.Command{
 		Use:   "update",
 		Short: "Update Azure Storage Account",
 		Run: func(cmd *cobra.Command, args []string) {
 			handleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile)
+		},
+	})
+
+	storageAccountCmd.AddCommand(&cobra.Command{
+		Use:   "delete",
+		Short: "Delete Azure Storage Account",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
 		},
 	})
 
