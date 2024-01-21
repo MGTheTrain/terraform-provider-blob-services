@@ -44,8 +44,16 @@ func main() {
 	})
 
 	storageAccountCmd.AddCommand(&cobra.Command{
+		Use:   "get",
+		Short: "Get an Azure Storage Account by account name",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleReadAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
+		},
+	})
+
+	storageAccountCmd.AddCommand(&cobra.Command{
 		Use:   "update",
-		Short: "Update Azure Storage Account",
+		Short: "Update an Azure Storage Account by account name",
 		Run: func(cmd *cobra.Command, args []string) {
 			handleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile)
 		},
@@ -53,7 +61,7 @@ func main() {
 
 	storageAccountCmd.AddCommand(&cobra.Command{
 		Use:   "delete",
-		Short: "Delete Azure Storage Account",
+		Short: "Delete an Azure Storage Account by account name",
 		Run: func(cmd *cobra.Command, args []string) {
 			handleDeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
 		},
@@ -79,6 +87,13 @@ func handleCreateAzureStorageAccount(subscriptionID, resourceGroupName, accountN
 	}
 
 	sendHTTPRequest("PUT", url, requestBody, accessToken)
+}
+
+func handleReadAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken string) {
+	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
+		subscriptionID, resourceGroupName, accountName)
+
+	sendHTTPRequest("GET", url, nil, accessToken)
 }
 
 func handleUpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, requestBodyFile string) {
