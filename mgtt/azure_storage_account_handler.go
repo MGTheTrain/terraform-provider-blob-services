@@ -74,7 +74,10 @@ func (m *AzureStorageAccountHandler) sendHTTPRequest(method, url string, request
 	fmt.Println("Response Status:", resp.Status)
 	fmt.Println("Response Body:")
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(resp.Body)
+	_, err = buf.ReadFrom(resp.Body)
+	if err != nil {
+		return fmt.Errorf("Error reading from buffer  %s:", err)
+	}
 	fmt.Println(buf.String())
 
 	return nil

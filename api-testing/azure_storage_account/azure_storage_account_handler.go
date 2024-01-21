@@ -164,6 +164,10 @@ func sendHTTPRequest(method, url string, requestBody map[string]interface{}, acc
 	fmt.Println("Response Status:", resp.Status)
 	fmt.Println("Response Body:")
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(resp.Body)
+	_, err = buf.ReadFrom(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading from buffer:", err)
+		return
+	}
 	fmt.Println(buf.String())
 }
