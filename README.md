@@ -19,6 +19,12 @@ Sample repository implementing a terraform provider designed for managing blob s
 
 ## How to use
 
+### In order to run tests
+
+```sh
+go test ./...
+```
+
 ### Compile custom provider
 
 On modern Windows OS (version 10 or 11) run: 
