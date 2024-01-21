@@ -6,3 +6,4 @@ lock.json
 terraform.tfstate**
 crash.log
 secrets.cfg
+secrets.txt
