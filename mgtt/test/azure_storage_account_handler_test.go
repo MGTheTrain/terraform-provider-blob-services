@@ -55,7 +55,7 @@ func TestStorageAccountHandler(t *testing.T) {
 	assert.NoError(t, err, "CreateStorageAccount should not return an error")
 
 	// [D]elete
-	err = handler.DeleteStorageAccount(resourceGroupName, accountName)
+	err = handler.DeleteStorageAccount(resourceGroupName, newAccountName)
 	assert.NoError(t, err, "DeleteStorageAccount should not return an error")
 
 	err = resource_group_handler.DeleteResourceGroup(resourceGroupName)
