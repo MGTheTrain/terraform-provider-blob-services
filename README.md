@@ -57,10 +57,15 @@ go build -o terraform-provider-mgtt
 
 Refer to [How to develop/ test existing provider locally?](https://github.com/hashicorp/terraform-provider-aws/issues/5396).
 
-Navigate to:
+Navigate to and remove :
 
 ```sh
 cd terraform
+
+# Remove previous build artifacts
+rm .terraform # Powershell
+rm -rf .terraform # Unix terminals
+rm  terraform.tfstate terraform.tfstate.backup
 ```
 
 On modern Windows OS with amd64 CPU architecture run:
@@ -91,6 +96,14 @@ terraform init -plugin-dir="./.terraform/plugins/"
 terraform plan
 # It is important to set the the log level before applying `teraform apply` or `teraform destroy` 
 export TF_LOG=DEBUG
-terraform apply --auto-approve
-terraform destroy --auto-approve
+terraform apply --auto-approve # initial create requests
+# Update input variables in tf files, e.g. 
+# ```hcl
+# resource "mgtt_azurerm_rg" "this" {
+#     name = "rg-test-9000"
+#     location = "West Europe"
+# }
+# ```
+terraform apply --auto-approve # update requests 
+terraform destroy --auto-approve # delete requests
 ```
