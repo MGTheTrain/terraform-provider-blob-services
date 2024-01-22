@@ -29,6 +29,8 @@ source secrets.cfg
 go test ./...
 ```
 
+**NOTE:** For tests managing Azure objects refer to following [README.md](./api-testing/azure_storage_account/README.md). Topics on how to retrieve a fresh `AZURE_ACCESS_TOKEN` should be covered.
+
 ### Compile custom provider
 
 On modern Windows OS (version 10 or 11) run: 
