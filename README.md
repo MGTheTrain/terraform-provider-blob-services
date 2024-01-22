@@ -26,7 +26,9 @@ Create from the [secrets.template.cfg](./templates/secrets.template.cfg) a secre
 
 ```sh
 source secrets.cfg
-go test ./...
+# go test ./...
+cd mgtt/test
+go test
 ```
 
 **NOTE:** For tests managing Azure objects refer to following [README.md](./api-testing/azure_storage_account/README.md). Topics on how to retrieve a fresh `AZURE_ACCESS_TOKEN` should be covered.
