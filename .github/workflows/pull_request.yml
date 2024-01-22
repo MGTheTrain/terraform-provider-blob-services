@@ -28,5 +28,3 @@ jobs:
         env:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           AZURE_ACCESS_TOKEN: ${{ steps.retrieve_access_token.outputs.access_token }}
-          AZURE_RESOURCE_GROUP_NAME: rg-test
-          AZURE_STORAGE_ACCOUNT_NAME: accunique2400
