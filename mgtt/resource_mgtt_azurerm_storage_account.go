@@ -149,7 +149,11 @@ func resourceMgttAzurermStorageAccountUpdate(d *schema.ResourceData, m interface
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
 	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
 
-	azureStorageAccountHandler.DeleteStorageAccount(resourceGroupName, name)
+	err := azureStorageAccountHandler.DeleteStorageAccount(resourceGroupName, name)
+
+	if err != nil {
+		return err
+	}
 
 	createRequestBody := map[string]interface{}{
 		"sku": map[string]interface{}{
