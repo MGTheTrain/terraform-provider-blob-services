@@ -20,9 +20,15 @@ Sample repository implementing a terraform provider designed for managing blob s
 
 ## How to use
 
-### In order to run tests
+### Exporting environment variables
 
 Create from the [secrets.template.cfg](./templates/secrets.template.cfg) a secrets.cfg file in the project root directory and replace the `PLACEHOLDER_*` values. Some [tests](./mgtt/test/) export the environment variables trough the secrets.cfg file.
+
+```sh
+source secrets.cfg
+```
+
+### In order to run tests
 
 ```sh
 source secrets.cfg
@@ -79,6 +85,7 @@ cp ../terraform-provider-mgtt .terraform/plugins/terraform-mgtt.com/mgttprovider
 ### Test provider executable with hcl files and terraform commands
 
 ```sh
+source secrets.cfg
 cd terraform
 terraform init -plugin-dir="./.terraform/plugins/"
 terraform plan
