@@ -138,20 +138,8 @@ func resourceMgttAzurermStorageAccountRead(d *schema.ResourceData, m interface{}
 }
 
 func resourceMgttAzurermStorageAccountUpdate(d *schema.ResourceData, m interface{}) error {
-	oldName, oldNameExists := d.GetChange("name")
-	oldResourceGroupName, oldResourceGroupNameExists := d.GetChange("resource_group_name")
-
-	if oldNameExists.(bool) {
-		fmt.Printf("Old name: %s\n", oldName.(string))
-	} else {
-		return fmt.Errorf("Error retrieving old name")
-	}
-
-	if oldResourceGroupNameExists.(bool) {
-		fmt.Printf("Old resource group name: %s\n", oldResourceGroupName.(string))
-	} else {
-		return fmt.Errorf("Error retrieving resource group name")
-	}
+	oldName, _ := d.GetChange("name")
+	oldResourceGroupName, _ := d.GetChange("resource_group_name")
 
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")

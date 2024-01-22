@@ -79,21 +79,9 @@ func resourceMgttAzurermRgRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
+// See: https://stackoverflow.com/questions/75319865/where-do-old-new-d-getchange-come-from-in-customizediff-and-diffsuppressfun
 func resourceMgttAzurermRgUpdate(d *schema.ResourceData, m interface{}) error {
-	oldName, oldNameExists := d.GetChange("name")
-	oldLocation, oldLocationExists := d.GetChange("location")
-
-	if oldNameExists.(bool) {
-		fmt.Printf("Old name: %s\n", oldName.(string))
-	} else {
-		return fmt.Errorf("Error retrieving old name")
-	}
-
-	if oldLocationExists.(bool) {
-		fmt.Printf("Old location: %s\n", oldLocation.(string))
-	} else {
-		return fmt.Errorf("Error retrieving old location")
-	}
+	oldName, _ := d.GetChange("name")
 
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
