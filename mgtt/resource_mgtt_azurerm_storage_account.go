@@ -8,20 +8,20 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func skuSchema() *schema.Resource {
-	return &schema.Resource{
-		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"tier": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-			},
-		},
-	}
-}
+// func skuSchema() *schema.Resource {
+// 	return &schema.Resource{
+// 		Schema: map[string]*schema.Schema{
+// 			"name": &schema.Schema{
+// 				Type:     schema.TypeString,
+// 				Required: true,
+// 			},
+// 			"tier": &schema.Schema{
+// 				Type:     schema.TypeString,
+// 				Required: true,
+// 			},
+// 		},
+// 	}
+// }
 
 func resourceMgttAzurermStorageAccount() *schema.Resource {
 	return &schema.Resource{
