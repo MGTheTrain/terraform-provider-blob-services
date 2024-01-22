@@ -80,19 +80,33 @@ func resourceMgttAzurermRgRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceMgttAzurermRgUpdate(d *schema.ResourceData, m interface{}) error {
-	name := d.Get("name").(string)
-	location := d.Get("location").(string)
+	oldName, oldNameExists := d.GetChange("name")
+	oldLocation, oldLocationExists := d.GetChange("location")
+
+	if oldNameExists.(bool) {
+		fmt.Printf("Old name: %s\n", oldName.(string))
+	} else {
+		return fmt.Errorf("Error retrieving old name")
+	}
+
+	if oldLocationExists.(bool) {
+		fmt.Printf("Old location: %s\n", oldLocation.(string))
+	} else {
+		return fmt.Errorf("Error retrieving old location")
+	}
 
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
 
 	azureResourceGroupHandler := NewAzureResourceGroupHandler(subscriptionID, accessToken)
 
-	err := azureResourceGroupHandler.DeleteResourceGroup(name)
+	err := azureResourceGroupHandler.DeleteResourceGroup(oldName.(string))
 	if err != nil {
 		return err
 	}
 
+	name := d.Get("name").(string)
+	location := d.Get("location").(string)
 	createRequestBody := map[string]interface{}{
 		"location": location,
 	}

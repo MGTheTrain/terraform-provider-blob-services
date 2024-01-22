@@ -138,22 +138,37 @@ func resourceMgttAzurermStorageAccountRead(d *schema.ResourceData, m interface{}
 }
 
 func resourceMgttAzurermStorageAccountUpdate(d *schema.ResourceData, m interface{}) error {
+	oldName, oldNameExists := d.GetChange("name")
+	oldResourceGroupName, oldResourceGroupNameExists := d.GetChange("resource_group_name")
+
+	if oldNameExists.(bool) {
+		fmt.Printf("Old name: %s\n", oldName.(string))
+	} else {
+		return fmt.Errorf("Error retrieving old name")
+	}
+
+	if oldResourceGroupNameExists.(bool) {
+		fmt.Printf("Old resource group name: %s\n", oldResourceGroupName.(string))
+	} else {
+		return fmt.Errorf("Error retrieving resource group name")
+	}
+
+	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
+	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
+	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
+
+	err := azureStorageAccountHandler.DeleteStorageAccount(oldResourceGroupName.(string), oldName.(string))
+
+	if err != nil {
+		return err
+	}
+
 	name := d.Get("name").(string)
 	resourceGroupName := d.Get("resource_group_name").(string)
 	location := d.Get("location").(string)
 	kind := d.Get("kind").(string)
 	skuName := d.Get("sku_name").(string)
 	skuTier := d.Get("sku_tier").(string)
-
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	azureStorageAccountHandler := NewAzureStorageAccountHandler(subscriptionID, accessToken)
-
-	err := azureStorageAccountHandler.DeleteStorageAccount(resourceGroupName, name)
-
-	if err != nil {
-		return err
-	}
 
 	createRequestBody := map[string]interface{}{
 		"sku": map[string]interface{}{
