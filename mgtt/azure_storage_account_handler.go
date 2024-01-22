@@ -36,13 +36,15 @@ func (m *AzureStorageAccountHandler) GetStorageAccount(resourceGroupName, accoun
 	return m.sendHTTPRequest("GET", url, nil, m.AccessToken)
 }
 
-// UpdateAzureStorageAccount updates an Azure Storage account.
-func (m *AzureStorageAccountHandler) UpdateStorageAccount(resourceGroupName, accountName, requestBody string) error {
-	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
-		m.SubscriptionID, resourceGroupName, accountName)
+// // UpdateAzureStorageAccount updates an Azure Storage account.
+// NOTE: We can not rename the resource with patch. Prefer deleting the resource and recreating it.
+// 		"Strive for immutability in your infrastructure deployments. Instead of making in-place updates, destroy and recreate resources when changes are required."
+// func (m *AzureStorageAccountHandler) UpdateStorageAccount(resourceGroupName, accountName, requestBody string) error {
+// 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
+// 		m.SubscriptionID, resourceGroupName, accountName)
 
-	return m.sendHTTPRequest("PATCH", url, []byte(requestBody), m.AccessToken)
-}
+// 	return m.sendHTTPRequest("PATCH", url, []byte(requestBody), m.AccessToken)
+// }
 
 // DeleteAzureStorageAccount deletes an Azure Storage account.
 func (m *AzureStorageAccountHandler) DeleteStorageAccount(resourceGroupName, accountName string) error {

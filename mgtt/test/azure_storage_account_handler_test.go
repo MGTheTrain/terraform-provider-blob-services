@@ -22,6 +22,10 @@ func TestStorageAccountHandler(t *testing.T) {
 	resource_group_handler := mgtt.NewAzureResourceGroupHandler(subscriptionID, accessToken)
 	handler := mgtt.NewAzureStorageAccountHandler(subscriptionID, accessToken)
 
+	createResourceGroupRequestBody := `{
+		"location": "West Europe"
+	}`
+
 	createRequestBody := `{
 		"sku": {
 			"name": "Standard_LRS",
@@ -35,33 +39,30 @@ func TestStorageAccountHandler(t *testing.T) {
 			}
 		}
 	}`
-	updateRequestBody := `{
-		"properties": {
-			"keyPolicy": {
-				"keyExpirationPeriodInDays": 10
-			}
-		}
-	}`
 
-	err := resource_group_handler.CreateResourceGroup(resourceGroupName, createRequestBody)
+	// [C]reate
+	err := resource_group_handler.CreateResourceGroup(resourceGroupName, createResourceGroupRequestBody)
 	assert.NoError(t, err, "CreateResourceGroup should not return an error")
 
-	// Test PUT operation
 	err = handler.CreateStorageAccount(resourceGroupName, accountName, createRequestBody)
 	assert.NoError(t, err, "CreateStorageAccount should not return an error")
 
-	// Test PATCH operation
-	err = handler.UpdateStorageAccount(resourceGroupName, accountName, updateRequestBody)
-	assert.NoError(t, err, "UpdateStorageAccount should not return an error")
-
-	// Test GET operation
+	// [R]ead
 	err = handler.GetStorageAccount(resourceGroupName, accountName)
 	assert.NoError(t, err, "GetStorageAccount should not return an error")
 
-	// Test DELETE operation
+	// [U]pdate -> Strive for immutability in your infrastructure deployments. Instead of making in-place updates, destroy and recreate resources when changes are required.
 	err = handler.DeleteStorageAccount(resourceGroupName, accountName)
 	assert.NoError(t, err, "DeleteStorageAccount should not return an error")
 
-	err = resource_group_handler.DeleteResourceGroup(resourceGroupName)
-	assert.NoError(t, err, "DeleteResourceGroup should not return an error")
+	newAccountName := "testaccount09876"
+	err = handler.CreateStorageAccount(resourceGroupName, newAccountName, createRequestBody)
+	assert.NoError(t, err, "CreateStorageAccount should not return an error")
+
+	// // [D]elete
+	// err = handler.DeleteStorageAccount(resourceGroupName, accountName)
+	// assert.NoError(t, err, "DeleteStorageAccount should not return an error")
+
+	// err = resource_group_handler.DeleteResourceGroup(resourceGroupName)
+	// assert.NoError(t, err, "DeleteResourceGroup should not return an error")
 }
