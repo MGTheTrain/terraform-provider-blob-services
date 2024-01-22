@@ -32,12 +32,7 @@ func TestStorageAccountHandler(t *testing.T) {
 			"tier": "Standard"
 		},
 		"kind": "StorageV2",
-		"location": "West Europe",
-		"properties": {
-			"keyPolicy": {
-				"keyExpirationPeriodInDays": 20
-			}
-		}
+		"location": "West Europe"
 	}`
 
 	// [C]reate
