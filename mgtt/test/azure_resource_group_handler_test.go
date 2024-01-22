@@ -21,25 +21,26 @@ func TestAzureResourceGroupHandler(t *testing.T) {
 	handler := mgtt.NewAzureResourceGroupHandler(subscriptionID, accessToken)
 
 	createRequestBody := `{
-		"sku": "West Europe"
-	}`
-	updateRequestBody := `{
-		"name": "rg-test-1000"
+		"location": "West Europe"
 	}`
 
-	// Test PUT operation
+	// [C]reate
 	err := handler.CreateResourceGroup(resourceGroupName, createRequestBody)
 	assert.NoError(t, err, "CreateResourceGroup should not return an error")
 
-	// Test PATCH operation
-	err = handler.UpdateResourceGroup(resourceGroupName, updateRequestBody)
-	assert.NoError(t, err, "UpdateResourceGroup should not return an error")
-
-	// Test GET operation
+	// [R]ead
 	err = handler.GetResourceGroup(resourceGroupName)
 	assert.NoError(t, err, "GetResourceGroup should not return an error")
 
-	// Test DELETE operation
+	// [U]pdate -> Strive for immutability in your infrastructure deployments. Instead of making in-place updates, destroy and recreate resources when changes are required.
 	err = handler.DeleteResourceGroup(resourceGroupName)
+	assert.NoError(t, err, "DeleteResourceGroup should not return an error")
+
+	newResourceGroupName := "rg-test1000"
+	err = handler.CreateResourceGroup(newResourceGroupName, createRequestBody)
+	assert.NoError(t, err, "CreateResourceGroup should not return an error")
+
+	// [D]elete
+	err = handler.DeleteResourceGroup(newResourceGroupName)
 	assert.NoError(t, err, "DeleteResourceGroup should not return an error")
 }

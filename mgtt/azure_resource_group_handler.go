@@ -36,13 +36,15 @@ func (m *AzureResourceGroupHandler) GetResourceGroup(resourceGroupName string) e
 	return m.sendHTTPRequest("GET", url, nil, m.AccessToken)
 }
 
-// UpdateResourceGroup updates an Azure Storage account.
-func (m *AzureResourceGroupHandler) UpdateResourceGroup(resourceGroupName, requestBody string) error {
-	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s?api-version=2021-04-01",
-		m.SubscriptionID, resourceGroupName)
+// // UpdateResourceGroup updates an Azure Storage account.
+// NOTE: We can not rename the resource group with patch. Prefer deleting the resource group and recreating it.
+// 		"Strive for immutability in your infrastructure deployments. Instead of making in-place updates, destroy and recreate resources when changes are required."
+// func (m *AzureResourceGroupHandler) UpdateResourceGroup(resourceGroupName, requestBody string) error {
+// 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s?api-version=2021-04-01",
+// 		m.SubscriptionID, resourceGroupName)
 
-	return m.sendHTTPRequest("PATCH", url, []byte(requestBody), m.AccessToken)
-}
+// 	return m.sendHTTPRequest("PATCH", url, []byte(requestBody), m.AccessToken)
+// }
 
 // DeleteResourceGroup deletes an Azure Storage account.
 func (m *AzureResourceGroupHandler) DeleteResourceGroup(resourceGroupName string) error {
