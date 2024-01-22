@@ -21,7 +21,7 @@ func NewAzureStorageAccountHandler(subscriptionID, accessToken string) *AzureSto
 }
 
 // CreateAzureStorageAccount creates an Azure Storage account.
-func (m *AzureStorageAccountHandler) CreateAzureStorageAccount(resourceGroupName, accountName, requestBody string) error {
+func (m *AzureStorageAccountHandler) CreateStorageAccount(resourceGroupName, accountName, requestBody string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		m.SubscriptionID, resourceGroupName, accountName)
 
@@ -29,7 +29,7 @@ func (m *AzureStorageAccountHandler) CreateAzureStorageAccount(resourceGroupName
 }
 
 // GetAzureStorageAccount reads information about an Azure Storage account.
-func (m *AzureStorageAccountHandler) GetAzureStorageAccount(resourceGroupName, accountName string) error {
+func (m *AzureStorageAccountHandler) GetStorageAccount(resourceGroupName, accountName string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		m.SubscriptionID, resourceGroupName, accountName)
 
@@ -37,7 +37,7 @@ func (m *AzureStorageAccountHandler) GetAzureStorageAccount(resourceGroupName, a
 }
 
 // UpdateAzureStorageAccount updates an Azure Storage account.
-func (m *AzureStorageAccountHandler) UpdateAzureStorageAccount(resourceGroupName, accountName, requestBody string) error {
+func (m *AzureStorageAccountHandler) UpdateStorageAccount(resourceGroupName, accountName, requestBody string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		m.SubscriptionID, resourceGroupName, accountName)
 
@@ -45,7 +45,7 @@ func (m *AzureStorageAccountHandler) UpdateAzureStorageAccount(resourceGroupName
 }
 
 // DeleteAzureStorageAccount deletes an Azure Storage account.
-func (m *AzureStorageAccountHandler) DeleteAzureStorageAccount(resourceGroupName, accountName string) error {
+func (m *AzureStorageAccountHandler) DeleteStorageAccount(resourceGroupName, accountName string) error {
 	url := fmt.Sprintf("https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s?api-version=2023-01-01",
 		m.SubscriptionID, resourceGroupName, accountName)
 

@@ -8,21 +8,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAzureStorageAccountHandler(t *testing.T) {
+func TestStorageAccountHandler(t *testing.T) {
 	// Read parameters from environment variables
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	resourceGroupName := os.Getenv("AZURE_RESOURCE_GROUP_NAME")
-	accountName := os.Getenv("AZURE_STORAGE_ACCOUNT_NAME")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
+	accountName := "testaccount54321"
+	resourceGroupName := "rg-test-100"
 
 	if subscriptionID == "" || resourceGroupName == "" || accountName == "" || accessToken == "" {
 		t.Fatal("Missing required environment variables")
 	}
 
-	// Create a new instance of AzureStorageAccountHandler
+	resource_group_handler := mgtt.NewAzureResourceGroupHandler(subscriptionID, accessToken)
 	handler := mgtt.NewAzureStorageAccountHandler(subscriptionID, accessToken)
 
-	// Example request body for PUT operation
 	createRequestBody := `{
 		"sku": {
 			"name": "Standard_LRS",
@@ -36,8 +35,6 @@ func TestAzureStorageAccountHandler(t *testing.T) {
 			}
 		}
 	}`
-
-	// Example request body for PATCH operation
 	updateRequestBody := `{
 		"properties": {
 			"keyPolicy": {
@@ -46,19 +43,25 @@ func TestAzureStorageAccountHandler(t *testing.T) {
 		}
 	}`
 
+	err := resource_group_handler.CreateResourceGroup(resourceGroupName, createRequestBody)
+	assert.NoError(t, err, "CreateResourceGroup should not return an error")
+
 	// Test PUT operation
-	err := handler.CreateAzureStorageAccount(resourceGroupName, accountName, createRequestBody)
-	assert.NoError(t, err, "CreateAzureStorageAccount should not return an error")
+	err = handler.CreateStorageAccount(resourceGroupName, accountName, createRequestBody)
+	assert.NoError(t, err, "CreateStorageAccount should not return an error")
 
 	// Test PATCH operation
-	err = handler.UpdateAzureStorageAccount(resourceGroupName, accountName, updateRequestBody)
-	assert.NoError(t, err, "UpdateAzureStorageAccount should not return an error")
+	err = handler.UpdateStorageAccount(resourceGroupName, accountName, updateRequestBody)
+	assert.NoError(t, err, "UpdateStorageAccount should not return an error")
 
 	// Test GET operation
-	err = handler.GetAzureStorageAccount(resourceGroupName, accountName)
-	assert.NoError(t, err, "GetAzureStorageAccount should not return an error")
+	err = handler.GetStorageAccount(resourceGroupName, accountName)
+	assert.NoError(t, err, "GetStorageAccount should not return an error")
 
 	// Test DELETE operation
-	err = handler.DeleteAzureStorageAccount(resourceGroupName, accountName)
-	assert.NoError(t, err, "DeleteAzureStorageAccount should not return an error")
+	err = handler.DeleteStorageAccount(resourceGroupName, accountName)
+	assert.NoError(t, err, "DeleteStorageAccount should not return an error")
+
+	err = resource_group_handler.DeleteResourceGroup(resourceGroupName)
+	assert.NoError(t, err, "DeleteResourceGroup should not return an error")
 }
