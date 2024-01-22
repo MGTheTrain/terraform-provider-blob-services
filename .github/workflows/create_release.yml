@@ -33,7 +33,7 @@ jobs:
         run: |
           sudo apt-get install -y curl jq
           sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-      - name: Loging as service principal
+      - name: Login as service principal
         run: az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
       - name: Retrieve and output acccess token
         id: retrieve_access_token
@@ -45,8 +45,6 @@ jobs:
         env:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           AZURE_ACCESS_TOKEN: ${{ steps.retrieve_access_token.outputs.access_token }}
-          AZURE_RESOURCE_GROUP_NAME: rg-test
-          AZURE_STORAGE_ACCOUNT_NAME: accunique2400
   create-git-tags-from-version-file-job:
     runs-on: ubuntu-latest
     needs: [set_stage]

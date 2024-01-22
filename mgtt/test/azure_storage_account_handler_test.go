@@ -8,57 +8,56 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAzureStorageAccountHandler(t *testing.T) {
+func TestStorageAccountHandler(t *testing.T) {
 	// Read parameters from environment variables
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	resourceGroupName := os.Getenv("AZURE_RESOURCE_GROUP_NAME")
-	accountName := os.Getenv("AZURE_STORAGE_ACCOUNT_NAME")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
+	accountName := "testaccount54321"
+	resourceGroupName := "rg-test-100"
 
 	if subscriptionID == "" || resourceGroupName == "" || accountName == "" || accessToken == "" {
 		t.Fatal("Missing required environment variables")
 	}
 
-	// Create a new instance of AzureStorageAccountHandler
-	handler := mgtt.NewAzureStorageAccountHandler()
+	resource_group_handler := mgtt.NewAzureResourceGroupHandler(subscriptionID, accessToken)
+	handler := mgtt.NewAzureStorageAccountHandler(subscriptionID, accessToken)
 
-	// Example request body for PUT operation
+	createResourceGroupRequestBody := `{
+		"location": "West Europe"
+	}`
+
 	createRequestBody := `{
 		"sku": {
 			"name": "Standard_LRS",
 			"tier": "Standard"
 		},
 		"kind": "StorageV2",
-		"location": "West Europe",
-		"properties": {
-			"keyPolicy": {
-				"keyExpirationPeriodInDays": 20
-			}
-		}
+		"location": "West Europe"
 	}`
 
-	// Example request body for PATCH operation
-	updateRequestBody := `{
-		"properties": {
-			"keyPolicy": {
-				"keyExpirationPeriodInDays": 10
-			}
-		}
-	}`
+	// [C]reate
+	err := resource_group_handler.CreateResourceGroup(resourceGroupName, createResourceGroupRequestBody)
+	assert.NoError(t, err, "CreateResourceGroup should not return an error")
 
-	// Test PUT operation
-	err := handler.CreateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, createRequestBody)
-	assert.NoError(t, err, "CreateAzureStorageAccount should not return an error")
+	err = handler.CreateStorageAccount(resourceGroupName, accountName, createRequestBody)
+	assert.NoError(t, err, "CreateStorageAccount should not return an error")
 
-	// Test PATCH operation
-	err = handler.UpdateAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken, updateRequestBody)
-	assert.NoError(t, err, "UpdateAzureStorageAccount should not return an error")
+	// [R]ead
+	err = handler.GetStorageAccount(resourceGroupName, accountName)
+	assert.NoError(t, err, "GetStorageAccount should not return an error")
 
-	// Test GET operation
-	err = handler.GetAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
-	assert.NoError(t, err, "GetAzureStorageAccount should not return an error")
+	// [U]pdate -> Strive for immutability in your infrastructure deployments. Instead of making in-place updates, destroy and recreate resources when changes are required.
+	err = handler.DeleteStorageAccount(resourceGroupName, accountName)
+	assert.NoError(t, err, "DeleteStorageAccount should not return an error")
 
-	// Test DELETE operation
-	err = handler.DeleteAzureStorageAccount(subscriptionID, resourceGroupName, accountName, accessToken)
-	assert.NoError(t, err, "DeleteAzureStorageAccount should not return an error")
+	newAccountName := "testaccount09876"
+	err = handler.CreateStorageAccount(resourceGroupName, newAccountName, createRequestBody)
+	assert.NoError(t, err, "CreateStorageAccount should not return an error")
+
+	// [D]elete
+	err = handler.DeleteStorageAccount(resourceGroupName, newAccountName)
+	assert.NoError(t, err, "DeleteStorageAccount should not return an error")
+
+	err = resource_group_handler.DeleteResourceGroup(resourceGroupName)
+	assert.NoError(t, err, "DeleteResourceGroup should not return an error")
 }

@@ -1,8 +1,18 @@
 package mgtt
 
 import (
+	"encoding/json"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+func ConvertMapToJSON(input map[string]interface{}) (string, error) {
+	jsonBytes, err := json.Marshal(input)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonBytes), nil
+}
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
