@@ -3,12 +3,12 @@
 # }
 
 resource "mgtt_azurerm_rg" "this" {
-    name = "rg-test-5000"
+    name = "rg-test-8000"
     location = "West Europe"
 }
 
 resource "mgtt_azurerm_storage_account" "this" {
-    name                 = "uniqacc2400"
+    name                 = "laughingblobstorage1000"
     location             = mgtt_azurerm_rg.this.location
     resource_group_name  = mgtt_azurerm_rg.this.name
     kind = "StorageV2"
