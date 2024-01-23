@@ -8,7 +8,7 @@ resource "mgtt_azurerm_rg" "this" {
 }
 
 resource "mgtt_azurerm_storage_account" "this" {
-    name                 = "laughingblobstorage1000"
+    name                 = "laughingblobstorage7000"
     location             = mgtt_azurerm_rg.this.location
     resource_group_name  = mgtt_azurerm_rg.this.name
     kind = "StorageV2"

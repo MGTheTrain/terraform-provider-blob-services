@@ -37,6 +37,13 @@ func getAzureStorageAccountContainerHandler() *AzureStorageAccountContainerHandl
 	return NewAzureStorageAccountContainerHandler(subscriptionID, accessToken)
 }
 
+// The Storage Account provisioning state needs to be checked
+// 2024-01-23T07:19:37.210+0100 [WARN]  unexpected data: terraform-mgtt.com/mgttprovider/mgtt:stdout="Response Status: 409 Conflict"
+// 2024-01-23T07:19:37.211+0100 [WARN]  unexpected data:
+//
+//	terraform-mgtt.com/mgttprovider/mgtt:stdout=
+//	| Response Body:
+//	| {"error":{"code":"StorageAccountIsNotProvisioned","message":"The storage account provisioning state must be 'Succeeded' before executing the operation."}}
 func resourceMgttAzurermStorageAccountContainerCreate(d *schema.ResourceData, m interface{}) error {
 	name, accountName, resourceGroupName := extractStorageAccountContainerData(d)
 	azureStorageAccountContainerHandler := getAzureStorageAccountContainerHandler()
@@ -48,7 +55,10 @@ func resourceMgttAzurermStorageAccountContainerCreate(d *schema.ResourceData, m 
 
 	id := uuid.New()
 	d.SetId(id.String())
-	setStorageAccountContainerData(d, name, accountName, resourceGroupName)
+	err = setStorageAccountContainerData(d, name, accountName, resourceGroupName)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -75,7 +85,10 @@ func resourceMgttAzurermStorageAccountContainerUpdate(d *schema.ResourceData, m 
 		return err
 	}
 
-	setStorageAccountContainerData(d, name, accountName, resourceGroupName)
+	err = setStorageAccountContainerData(d, name, accountName, resourceGroupName)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
