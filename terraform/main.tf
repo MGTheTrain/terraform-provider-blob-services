@@ -3,7 +3,7 @@
 # }
 
 resource "mgtt_azurerm_rg" "this" {
-    name = "rg-test-8000"
+    name = "rg-test-9000"
     location = "West Europe"
 }
 
@@ -23,9 +23,8 @@ resource "mgtt_azurerm_storage_account" "this" {
     # }
 }
 
-
-# resource "mgtt_azurerm_storage_account_container" "this" {
-#     name = "great"
-#     location = "West Europe"
-#     resource_group_name = "West Europe"
-# }
+resource "mgtt_azurerm_storage_account_container" "this" {
+    name = "LaughingLlamaContainer4314"
+    account_name = mgtt_azurerm_storage_account.this.name
+    resource_group_name = mgtt_azurerm_rg.this.name
+}
