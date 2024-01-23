@@ -31,86 +31,86 @@ func resourceMgttAzurermStorageAccountContainer() *schema.Resource {
 	}
 }
 
-func resourceMgttAzurermStorageAccountContainerCreate(d *schema.ResourceData, m interface{}) error {
-	name := d.Get("name").(string)
-	account_name := d.Get("account_name").(string)
-	resourceGroupName := d.Get("resource_group_name").(string)
-
+func getAzureStorageAccountContainerHandler() *AzureStorageAccountContainerHandler {
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	azureStorageAccountContainerHandler := NewAzureStorageAccountContainerHandler(subscriptionID, accessToken)
+	return NewAzureStorageAccountContainerHandler(subscriptionID, accessToken)
+}
 
-	err := azureStorageAccountContainerHandler.CreateStorageAccountContainer(resourceGroupName, account_name, name, `{}`)
+// The Storage Account provisioning state needs to be checked
+// 2024-01-23T07:19:37.210+0100 [WARN]  unexpected data: terraform-mgtt.com/mgttprovider/mgtt:stdout="Response Status: 409 Conflict"
+// 2024-01-23T07:19:37.211+0100 [WARN]  unexpected data:
+//
+//	terraform-mgtt.com/mgttprovider/mgtt:stdout=
+//	| Response Body:
+//	| {"error":{"code":"StorageAccountIsNotProvisioned","message":"The storage account provisioning state must be 'Succeeded' before executing the operation."}}
+func resourceMgttAzurermStorageAccountContainerCreate(d *schema.ResourceData, m interface{}) error {
+	name, accountName, resourceGroupName := extractStorageAccountContainerData(d)
+	azureStorageAccountContainerHandler := getAzureStorageAccountContainerHandler()
 
+	err := azureStorageAccountContainerHandler.CreateStorageAccountContainer(resourceGroupName, accountName, name, `{}`)
 	if err != nil {
 		return err
 	}
 
 	id := uuid.New()
 	d.SetId(id.String())
-
-	if err := d.Set("name", name); err != nil {
+	err = setStorageAccountContainerData(d, name, accountName, resourceGroupName)
+	if err != nil {
 		return err
 	}
-	if err := d.Set("account_name", account_name); err != nil {
-		return err
-	}
-	if err := d.Set("resource_group_name", resourceGroupName); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func resourceMgttAzurermStorageAccountContainerRead(d *schema.ResourceData, m interface{}) error {
-	name := d.Get("name").(string)
-	account_name := d.Get("account_name").(string)
-	resourceGroupName := d.Get("resource_group_name").(string)
+	name, accountName, resourceGroupName := extractStorageAccountContainerData(d)
+	azureStorageAccountContainerHandler := getAzureStorageAccountContainerHandler()
 
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	azureStorageAccountContainerHandler := NewAzureStorageAccountContainerHandler(subscriptionID, accessToken)
+	err := azureStorageAccountContainerHandler.GetStorageAccountContainer(resourceGroupName, accountName, name)
+	return err
+}
 
-	err := azureStorageAccountContainerHandler.GetStorageAccountContainer(resourceGroupName, account_name, name)
+func resourceMgttAzurermStorageAccountContainerUpdate(d *schema.ResourceData, m interface{}) error {
+	oldName, oldAccountName, oldResourceGroupName := extractOldStorageAccountContainerData(d)
+	azureStorageAccountContainerHandler := getAzureStorageAccountContainerHandler()
 
+	err := azureStorageAccountContainerHandler.DeleteStorageAccountContainer(oldResourceGroupName, oldAccountName, oldName)
+	if err != nil {
+		return err
+	}
+
+	name, accountName, resourceGroupName := extractStorageAccountContainerData(d)
+	err = azureStorageAccountContainerHandler.CreateStorageAccountContainer(resourceGroupName, accountName, name, `{}`)
+	if err != nil {
+		return err
+	}
+
+	err = setStorageAccountContainerData(d, name, accountName, resourceGroupName)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func resourceMgttAzurermStorageAccountContainerUpdate(d *schema.ResourceData, m interface{}) error {
-	oldName, _ := d.GetChange("name")
-	oldAccountName, _ := d.GetChange("account_name")
-	oldResourceGroupName, _ := d.GetChange("resource_group_name")
+func resourceMgttAzurermStorageAccountContainerDelete(d *schema.ResourceData, m interface{}) error {
+	name, accountName, resourceGroupName := extractStorageAccountContainerData(d)
+	azureStorageAccountContainerHandler := getAzureStorageAccountContainerHandler()
 
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	azureStorageAccountContainerHandler := NewAzureStorageAccountContainerHandler(subscriptionID, accessToken)
+	err := azureStorageAccountContainerHandler.DeleteStorageAccountContainer(resourceGroupName, accountName, name)
+	return err
+}
 
-	err := azureStorageAccountContainerHandler.DeleteStorageAccountContainer(oldResourceGroupName.(string), oldAccountName.(string), oldName.(string))
+// Helper functions
 
-	if err != nil {
-		return err
-	}
+func extractStorageAccountContainerData(d *schema.ResourceData) (string, string, string) {
+	return d.Get("name").(string), d.Get("account_name").(string), d.Get("resource_group_name").(string)
+}
 
-	name := d.Get("name").(string)
-	account_name := d.Get("account_name").(string)
-	resourceGroupName := d.Get("resource_group_name").(string)
-
-	err = azureStorageAccountContainerHandler.CreateStorageAccountContainer(resourceGroupName, account_name, name, `{}`)
-
-	if err != nil {
-		return err
-	}
-
-	id := uuid.New()
-	d.SetId(id.String())
-
+func setStorageAccountContainerData(d *schema.ResourceData, name, accountName, resourceGroupName string) error {
 	if err := d.Set("name", name); err != nil {
 		return err
 	}
-	if err := d.Set("account_name", account_name); err != nil {
+	if err := d.Set("account_name", accountName); err != nil {
 		return err
 	}
 	if err := d.Set("resource_group_name", resourceGroupName); err != nil {
@@ -120,19 +120,10 @@ func resourceMgttAzurermStorageAccountContainerUpdate(d *schema.ResourceData, m 
 	return nil
 }
 
-func resourceMgttAzurermStorageAccountContainerDelete(d *schema.ResourceData, m interface{}) error {
-	name := d.Get("name").(string)
-	account_name := d.Get("account_name").(string)
-	resourceGroupName := d.Get("resource_group_name").(string)
+func extractOldStorageAccountContainerData(d *schema.ResourceData) (string, string, string) {
+	oldName, _ := d.GetChange("name")
+	oldAccountName, _ := d.GetChange("account_name")
+	oldResourceGroupName, _ := d.GetChange("resource_group_name")
 
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	azureStorageAccountContainerHandler := NewAzureStorageAccountContainerHandler(subscriptionID, accessToken)
-
-	err := azureStorageAccountContainerHandler.DeleteStorageAccountContainer(resourceGroupName, account_name, name)
-
-	if err != nil {
-		return err
-	}
-	return nil
+	return oldName.(string), oldAccountName.(string), oldResourceGroupName.(string)
 }

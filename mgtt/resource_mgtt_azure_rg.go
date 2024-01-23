@@ -28,15 +28,13 @@ func resourceMgttAzurermRg() *schema.Resource {
 	}
 }
 
-func resourceMgttAzurermRgCreate(d *schema.ResourceData, m interface{}) error {
-	name := d.Get("name").(string)
-	location := d.Get("location").(string)
-
+func getResourceHandler() *AzureResourceGroupHandler {
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
+	return NewAzureResourceGroupHandler(subscriptionID, accessToken)
+}
 
-	azureResourceGroupHandler := NewAzureResourceGroupHandler(subscriptionID, accessToken)
-
+func createResourceGroup(name, location string, handler *AzureResourceGroupHandler) error {
 	createRequestBody := map[string]interface{}{
 		"location": location,
 	}
@@ -46,8 +44,40 @@ func resourceMgttAzurermRgCreate(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Error converting map to JSON: %s", err)
 	}
 
-	err = azureResourceGroupHandler.CreateResourceGroup(name, jsonString)
+	return handler.CreateResourceGroup(name, jsonString)
+}
 
+func deleteResourceGroup(name string, handler *AzureResourceGroupHandler) error {
+	return handler.DeleteResourceGroup(name)
+}
+
+// Helper functions
+
+func extractResourceData(d *schema.ResourceData) (string, string) {
+	return d.Get("name").(string), d.Get("location").(string)
+}
+
+func setResourceData(d *schema.ResourceData, name, location string) error {
+	if err := d.Set("name", name); err != nil {
+		return err
+	}
+	if err := d.Set("location", location); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func extractOldResourceData(d *schema.ResourceData) string {
+	oldName, _ := d.GetChange("name")
+	return oldName.(string)
+}
+
+func resourceMgttAzurermRgCreate(d *schema.ResourceData, m interface{}) error {
+	name, location := extractResourceData(d)
+	handler := getResourceHandler()
+
+	err := createResourceGroup(name, location, handler)
 	if err != nil {
 		return err
 	}
@@ -55,10 +85,7 @@ func resourceMgttAzurermRgCreate(d *schema.ResourceData, m interface{}) error {
 	id := uuid.New()
 	d.SetId(id.String())
 
-	if err := d.Set("name", name); err != nil {
-		return err
-	}
-	if err := d.Set("location", location); err != nil {
+	if err := setResourceData(d, name, location); err != nil {
 		return err
 	}
 	return nil
@@ -67,68 +94,43 @@ func resourceMgttAzurermRgCreate(d *schema.ResourceData, m interface{}) error {
 func resourceMgttAzurermRgRead(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
 
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	azureResourceGroupHandler := NewAzureResourceGroupHandler(subscriptionID, accessToken)
+	handler := getResourceHandler()
 
-	err := azureResourceGroupHandler.GetResourceGroup(name)
-
+	err := handler.GetResourceGroup(name)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// See: https://stackoverflow.com/questions/75319865/where-do-old-new-d-getchange-come-from-in-customizediff-and-diffsuppressfun
 func resourceMgttAzurermRgUpdate(d *schema.ResourceData, m interface{}) error {
-	oldName, _ := d.GetChange("name")
+	oldName := extractOldResourceData(d)
+	handler := getResourceHandler()
 
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-
-	azureResourceGroupHandler := NewAzureResourceGroupHandler(subscriptionID, accessToken)
-
-	err := azureResourceGroupHandler.DeleteResourceGroup(oldName.(string))
+	err := deleteResourceGroup(oldName, handler)
 	if err != nil {
 		return err
 	}
 
-	name := d.Get("name").(string)
-	location := d.Get("location").(string)
-	createRequestBody := map[string]interface{}{
-		"location": location,
-	}
+	name, location := extractResourceData(d)
 
-	jsonString, err := ConvertMapToJSON(createRequestBody)
-	if err != nil {
-		return fmt.Errorf("Error converting map to JSON: %s", err)
-	}
-
-	err = azureResourceGroupHandler.CreateResourceGroup(name, jsonString)
-
+	err = createResourceGroup(name, location, handler)
 	if err != nil {
 		return err
 	}
 
-	if err := d.Set("name", name); err != nil {
+	if err := setResourceData(d, name, location); err != nil {
 		return err
 	}
-	if err := d.Set("location", location); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func resourceMgttAzurermRgDelete(d *schema.ResourceData, m interface{}) error {
-	name := d.Get("name").(string)
+	name := extractOldResourceData(d)
 
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	azureResourceGroupHandler := NewAzureResourceGroupHandler(subscriptionID, accessToken)
+	handler := getResourceHandler()
 
-	err := azureResourceGroupHandler.DeleteResourceGroup(name)
-
+	err := deleteResourceGroup(name, handler)
 	if err != nil {
 		return err
 	}
