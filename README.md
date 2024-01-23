@@ -8,7 +8,7 @@
 
 ## Description
 
-Sample repository implementing a terraform provider designed for managing blob storage services in Azure and AWS
+Sample repository implementing a terraform provider designed for managing resources in Azure and AWS
 
 ## References
 
