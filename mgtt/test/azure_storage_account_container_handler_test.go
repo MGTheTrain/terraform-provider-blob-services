@@ -13,8 +13,8 @@ func TestStorageAccountContainerHandler(t *testing.T) {
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
 	accountName := "testaccount54321"
-	resourceGroupName := "rg-test-100"
-	containerName := "test-container-8092"
+	resourceGroupName := "rg-test-300"
+	containerName := "test-container-8192"
 
 	if subscriptionID == "" || resourceGroupName == "" || accountName == "" || accessToken == "" {
 		t.Fatal("Missing required environment variables")

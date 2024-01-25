@@ -12,7 +12,7 @@ func TestAzureResourceGroupHandler(t *testing.T) {
 	// Read parameters from environment variables
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	accessToken := os.Getenv("AZURE_ACCESS_TOKEN")
-	resourceGroupName := "rg-test-100"
+	resourceGroupName := "rg-test-200"
 
 	if subscriptionID == "" || resourceGroupName == "" || accessToken == "" {
 		t.Fatal("Missing required environment variables")
