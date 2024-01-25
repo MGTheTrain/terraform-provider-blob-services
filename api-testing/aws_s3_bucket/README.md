@@ -19,8 +19,8 @@ Cli applcation for managing AWS S3 buckets.
 
 ### Preconditions
 
-You need an 
-- AWS subscription
+You need 
+- an AWS subscription
 - the `AWS_ACCESS_KEY_ID` environment variable
 - the `AWS_SECRET_ACCESS_KEY` environment variable
 
