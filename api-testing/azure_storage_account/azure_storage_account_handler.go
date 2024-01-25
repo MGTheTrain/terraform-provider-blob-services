@@ -1,4 +1,4 @@
-package azure_storage_account
+package main
 
 import (
 	"bytes"
