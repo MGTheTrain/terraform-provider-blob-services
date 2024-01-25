@@ -20,6 +20,11 @@ Sample repository implementing a terraform provider designed for managing resour
 
 ## How to use
 
+### (Optional) Check cli tools serving as a basis for implemting resources
+
+- [README.md in regards to azure_storage_account cli tool](./api-testing/azure_storage_account/README.md)
+- [README.md in regards to aws_s3_bucket cli tool](./api-testing/aws_s3_bucket/README.md)
+
 ### Exporting environment variables
 
 Create from the [secrets.template.cfg](./templates/secrets.template.cfg) a secrets.cfg file in the project root directory and replace the `PLACEHOLDER_*` values. Some [tests](./mgtt/test/) export the environment variables trough the secrets.cfg file.
@@ -107,8 +112,3 @@ terraform apply --auto-approve # initial create requests
 terraform apply --auto-approve # update requests 
 terraform destroy --auto-approve # delete requests
 ```
-
-### Check cli tools serving as a basis for implemting resources
-
-- [README.md in regards to azure_storage_account cli tool](./api-testing/azure_storage_account/README.md)
-- [README.md in regards to aws_s3_bucket cli tool](./api-testing/aws_s3_bucket/README.md)
