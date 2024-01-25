@@ -108,7 +108,7 @@ terraform apply --auto-approve # update requests
 terraform destroy --auto-approve # delete requests
 ```
 
-### (Optional) Check cli tools serving as a basis for implemting resources
+### Optional - Check cli tools serving as a basis for implemting resources
 
 - [README.md in regards to azure_storage_account cli tool](./api-testing/azure_storage_account/README.md)
 - [README.md in regards to aws_s3_bucket cli tool](./api-testing/aws_s3_bucket/README.md)
