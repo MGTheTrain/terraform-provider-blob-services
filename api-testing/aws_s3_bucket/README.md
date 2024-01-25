@@ -44,7 +44,7 @@ On Unix systems (MacOS or Ubuntu >=18.04/debian >=11):
 # [C]reate an aws s3 bucket
 aws_s3_bucket_handler bucket create -b <bucket name> -r <region>  -k <aws access key id> -s <aws secret access key>
 
-# [R]ead an aws s3 bucket
+# [R]ead - Get an aws s3 bucket
 aws_s3_bucket_handler bucket get -b <bucket name> -r <region>  -k <aws access key id> -s <aws secret access key>
 
 # [D]elete an aws s3 bucket 
