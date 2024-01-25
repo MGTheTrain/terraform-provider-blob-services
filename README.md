@@ -22,6 +22,8 @@ Sample repository implementing a terraform provider designed for managing resour
 
 ### (Optional) Check cli tools serving as a basis for implemting resources
 
+Cli tools can be found here:
+
 - [README.md in regards to azure_storage_account cli tool](./api-testing/azure_storage_account/README.md)
 - [README.md in regards to aws_s3_bucket cli tool](./api-testing/aws_s3_bucket/README.md)
 
