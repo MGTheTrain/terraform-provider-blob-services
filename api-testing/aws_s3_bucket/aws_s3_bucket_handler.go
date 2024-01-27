@@ -8,9 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"os"
-	"regexp"
 	"strings"
 	"time"
 
@@ -23,12 +21,6 @@ var (
 	bucketName      string
 	region          string
 )
-
-const (
-	defaultEncoding = "UTF-8"
-)
-
-var encodedCharactersPattern = regexp.MustCompile(`\+|\*|%7E|%2F`)
 
 func main() {
 	var rootCmd = &cobra.Command{Use: "aws_s3_bucket_handler"}
@@ -60,19 +52,22 @@ func main() {
 }
 
 func handleCreateAwsS3Bucket(accessKeyId, secretAccessKey, bucketName, region string) {
-	requestURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com", bucketName, region)
+	requestURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/", bucketName, region)
 
 	signature, dateTime := generateSignature("PUT", requestURL, accessKeyId, secretAccessKey)
-	queryParams := map[string]string{
-		"X-Amz-Signature":     signature,
-		"X-Amz-Algorithm":     "AWS4-HMAC-SHA256",
-		"X-Amz-Credential":    urlEncode(fmt.Sprintf("%s/%s/%s/s3/aws4_request", accessKeyId, dateTime.Format("20060102"), region)),
-		"X-Amz-Date":          dateTime.Format("20060102T150405Z"),
-		"X-Amz-Expires":       "86400",
-		"X-Amz-SignedHeaders": "host",
+
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("AWS4-HMAC-SHA256 Credential=%s/%s/%s/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=%s",
+			accessKeyId,
+			dateTime.Format("20060102"),
+			region,
+			signature,
+		),
+		"X-Amz-Content-Sha256": "UNSIGNED-PAYLOAD",
+		"X-Amz-Date":           dateTime.Format("20060102T150405Z"),
 	}
 
-	sendHTTPRequest("PUT", requestURL, nil, queryParams)
+	sendHTTPRequest("PUT", requestURL, nil, headers)
 }
 
 func generateSignature(method, requestURL, accessKeyId, secretAccessKey string) (string, time.Time) {
@@ -87,47 +82,46 @@ func generateSignature(method, requestURL, accessKeyId, secretAccessKey string) 
 	)
 
 	// String to Sign
-	stringToSign := fmt.Sprintf("AWS4-HMAC-SHA256\n%s\n%s/%s/s3/aws4_request\n%s",
+	stringToSign := fmt.Sprintf("AWS4-HMAC-SHA256\n%s\n%s/%s/s3/aws4_request\n%x",
 		dateTime.Format("20060102T150405Z"),
 		date,
 		region,
-		sha256Hex(canonicalRequest),
+		sha256Hash(canonicalRequest),
 	)
 
 	// Signing Key
 	signingKey := getSigningKey(secretAccessKey, dateTime, region)
 
 	// Signing the String to Sign
-	h := hmac.New(sha256.New, signingKey)
-	h.Write([]byte(stringToSign))
-	signature := base64.StdEncoding.EncodeToString(h.Sum(nil))
+	signature := hmacSHA256(signingKey, []byte(stringToSign))
+	signatureString := base64.StdEncoding.EncodeToString(signature)
 
-	return signature, dateTime
+	return signatureString, dateTime
 }
 
-// Function to compute SHA-256 hash and return it as a hexadecimal string
-func sha256Hex(data string) string {
+// Function to compute SHA-256 hash and return it as a byte slice
+func sha256Hash(data string) []byte {
 	hasher := sha256.New()
 	hasher.Write([]byte(data))
-	return fmt.Sprintf("%x", hasher.Sum(nil))
+	return hasher.Sum(nil)
 }
 
 func getSigningKey(secretAccessKey string, dateTime time.Time, region string) []byte {
 	date := dateTime.Format("20060102")
-	kDate := hmac.New(sha256.New, []byte("AWS4"+secretAccessKey))
-	kDate.Write([]byte(date))
-	kRegion := hmac.New(sha256.New, kDate.Sum(nil))
-	kRegion.Write([]byte(region))
-	kService := hmac.New(sha256.New, kRegion.Sum(nil))
-	kService.Write([]byte("s3"))
-	signingKey := hmac.New(sha256.New, kService.Sum(nil))
-	signingKey.Write([]byte("aws4_request"))
-	return signingKey.Sum(nil)
+	kDate := hmacSHA256([]byte("AWS4"+secretAccessKey), []byte(date))
+	kRegion := hmacSHA256(kDate, []byte(region))
+	kService := hmacSHA256(kRegion, []byte("s3"))
+	signingKey := hmacSHA256(kService, []byte("aws4_request"))
+	return signingKey
 }
 
-func sendHTTPRequest(method, url string, requestBody map[string]interface{}, queryParams map[string]string) {
-	urlWithParams := addQueryParamsToURL(url, queryParams)
+func hmacSHA256(key, data []byte) []byte {
+	h := hmac.New(sha256.New, key)
+	h.Write(data)
+	return h.Sum(nil)
+}
 
+func sendHTTPRequest(method, url string, requestBody map[string]interface{}, headers map[string]string) {
 	var req *http.Request
 	var err error
 
@@ -137,15 +131,26 @@ func sendHTTPRequest(method, url string, requestBody map[string]interface{}, que
 			fmt.Println("Error encoding JSON:", err)
 			return
 		}
-		req, err = http.NewRequest(method, urlWithParams, bytes.NewBuffer(jsonBody))
+		req, err = http.NewRequest(method, url, bytes.NewBuffer(jsonBody))
 		req.Header.Set("Content-Type", "application/json") // Add this line for content type
 	} else {
-		req, err = http.NewRequest(method, urlWithParams, nil)
+		req, err = http.NewRequest(method, url, nil)
 	}
 
 	if err != nil {
 		fmt.Println("Error creating request:", err)
 		return
+	}
+
+	// Set headers
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
+	// Print all headers
+	fmt.Println("Request Headers:")
+	for key, values := range req.Header {
+		fmt.Printf("%s: %s\n", key, strings.Join(values, ", "))
 	}
 
 	client := &http.Client{}
@@ -156,7 +161,7 @@ func sendHTTPRequest(method, url string, requestBody map[string]interface{}, que
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("URL with params:", urlWithParams)
+	fmt.Println("URL:", url)
 	fmt.Println("Response Status:", resp.Status)
 	fmt.Println("Response Body:")
 	buf := new(bytes.Buffer)
@@ -166,56 +171,4 @@ func sendHTTPRequest(method, url string, requestBody map[string]interface{}, que
 		return
 	}
 	fmt.Println(buf.String())
-}
-
-func addQueryParamsToURL(url string, queryParams map[string]string) string {
-	if len(queryParams) == 0 {
-		return url
-	}
-
-	var params []string
-	for key, value := range queryParams {
-		// Do not encode the values for certain parameters
-		if key == "X-Amz-Credential" {
-			params = append(params, fmt.Sprintf("%s=%s", key, value))
-		} else {
-			params = append(params, fmt.Sprintf("%s=%s", key, urlEncode(value)))
-		}
-	}
-
-	// Construct the URL with encoded parameters
-	urlWithParams := fmt.Sprintf("%s?%s", url, strings.Join(params, "&"))
-
-	// Replace "&amp;" with "&" in the URL
-	urlWithParams = strings.ReplaceAll(urlWithParams, "&amp;", "&")
-
-	return urlWithParams
-}
-
-func urlEncode(value string) string {
-	if value == "" {
-		return ""
-	}
-
-	encoded := url.QueryEscape(value)
-
-	replacementFunc := func(match string) string {
-		switch match {
-		case "+":
-			return "%20"
-		case "*":
-			return "%2A"
-		case "%7E":
-			return "~"
-		case "%2F":
-			return "/"
-		}
-		return match
-	}
-
-	// Replace encoded slashes
-	encoded = strings.ReplaceAll(encoded, "%2F", "/")
-
-	encoded = encodedCharactersPattern.ReplaceAllStringFunc(encoded, replacementFunc)
-	return encoded
 }
