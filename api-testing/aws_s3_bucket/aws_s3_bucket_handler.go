@@ -25,18 +25,18 @@ var (
 func main() {
 	var rootCmd = &cobra.Command{Use: "aws_s3_bucket_handler"}
 
-	rootCmd.PersistentFlags().StringVarP(&accessKeyId, "accessKeyId", "a", "", "Your AWS access key id")
-	rootCmd.PersistentFlags().StringVarP(&secretAccessKey, "secretAccessKey", "s", "", "Your AWS secret access key")
-	rootCmd.PersistentFlags().StringVarP(&bucketName, "bucketName", "b", "", "Your AWS S3 bucket name")
+	rootCmd.PersistentFlags().StringVarP(&accessKeyId, "access_key_id", "a", "", "Your AWS access key id")
+	rootCmd.PersistentFlags().StringVarP(&secretAccessKey, "secret_access_key", "s", "", "Your AWS secret access key")
+	rootCmd.PersistentFlags().StringVarP(&bucketName, "bucket_name", "b", "", "Your AWS S3 bucket name")
 	rootCmd.PersistentFlags().StringVarP(&region, "region", "r", "", "The AWS region used for deploying the AWS S3 bucket")
-	// Create a new aws_s3_bucket command
-	storageAccountCmd := &cobra.Command{
-		Use:   "aws_s3_bucket",
+	// Create a new bucket command
+	s3bucketCmd := &cobra.Command{
+		Use:   "bucket",
 		Short: "Manage AWS S3 bucket",
 	}
 
-	// Add subcommands to the aws_s3_bucket command
-	storageAccountCmd.AddCommand(&cobra.Command{
+	// Add subcommands to the bucket command
+	s3bucketCmd.AddCommand(&cobra.Command{
 		Use:   "create",
 		Short: "Create AWS S3 bucket by bucket name",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -44,7 +44,7 @@ func main() {
 		},
 	})
 
-	storageAccountCmd.AddCommand(&cobra.Command{
+	s3bucketCmd.AddCommand(&cobra.Command{
 		Use:   "get",
 		Short: "Get an AWS S3 bucket by bucket name",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -52,7 +52,7 @@ func main() {
 		},
 	})
 
-	storageAccountCmd.AddCommand(&cobra.Command{
+	s3bucketCmd.AddCommand(&cobra.Command{
 		Use:   "delete",
 		Short: "Delete an AWS S3 bucket by bucket name",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -60,7 +60,7 @@ func main() {
 		},
 	})
 
-	rootCmd.AddCommand(storageAccountCmd)
+	rootCmd.AddCommand(s3bucketCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -124,7 +124,7 @@ func sendHTTPRequest(method, url string, requestBody map[string]interface{}, acc
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("Authorization", accessToken)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
