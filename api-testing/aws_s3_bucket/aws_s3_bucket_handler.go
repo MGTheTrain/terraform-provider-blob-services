@@ -10,8 +10,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/base64"
-	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
