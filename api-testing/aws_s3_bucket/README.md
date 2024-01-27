@@ -15,6 +15,7 @@ Cli applcation for managing AWS S3 buckets.
 - [Sample HTTP Request for general purpose buckets](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html)
 - [Signing and authenticating REST requests](https://docs.aws.amazon.com/AmazonS3/latest/userguide/RESTAuthentication.html)
 - [Authenticating Requests: Using Query Parameters (AWS Signature Version 4)](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html#query-string-auth-v4-signing-example)
+. [Amazon S3 REST API with curl](https://czak.pl/2015/09/15/s3-rest-api-with-curl.html)
 
 ## How to use
 
