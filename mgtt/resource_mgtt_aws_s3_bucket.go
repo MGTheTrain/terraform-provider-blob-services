@@ -40,10 +40,6 @@ func deleteS3Bucket(name string, handler *AwsS3BucketHandler) error {
 
 // Helper functions
 
-func extractS3BucketData(d *schema.ResourceData) string {
-	return d.Get("name").(string)
-}
-
 func setS3BucketData(d *schema.ResourceData, name string) error {
 	if err := d.Set("name", name); err != nil {
 		return err
