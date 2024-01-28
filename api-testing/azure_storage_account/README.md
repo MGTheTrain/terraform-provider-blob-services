@@ -63,13 +63,17 @@ On Unix systems (MacOS or Ubuntu >=18.04/debian >=11):
 # [C]reate a storage account service
 # Adjust the `assets/create_azure_storage_account_request_body.json` file
 azure_storage_account_handler storage_account create -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
+azure_storage_account_handler storage_account create --subscription_id <subscription_id> --resource_group_name <resource_group_name> --account_name <storage_account_name> --access_token <bearer_access_token> --request_body_file <req_body_json_file>
 
 # [R]ead a storage account service by storage account name
 azure_storage_account_handler storage_account get -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token>
+azure_storage_account_handler storage_account get --subscription_id <subscription_id> --resource_group_name <resource_group_name> --account_name <storage_account_name> --access_token <bearer_access_token> --request_body_file <req_body_json_file>
 
 # [U]pdate a storage account service by storage account name
 azure_storage_account_handler storage_account update -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> -r <req_body_json_file>
+azure_storage_account_handler storage_account update --subscription_id <subscription_id> --resource_group_name <resource_group_name> --account_name <storage_account_name> --access_token <bearer_access_token> --request_body_file <req_body_json_file>
 
 # [D]elete storage account service by storage account name
 azure_storage_account_handler storage_account delete -s <subscription_id> -g <resource_group_name> -a <storage_account_name> -t <bearer_access_token> 
+azure_storage_account_handler storage_account delete --subscription_id <subscription_id> --resource_group_name <resource_group_name> --account_name <storage_account_name> --access_token <bearer_access_token> --request_body_file <req_body_json_file>
 ```
