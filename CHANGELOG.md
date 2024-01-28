@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 13-01-2024
+## [0.1.0] - 28-01-2024
 
 ### Added
 
-- Initial setup
+- Initial setup considering [cli applications](./api-testing/) utilizing REST APIs or SDKs deriving handler structs used in [mgtt terraform provider resources](./mgtt/) 
+- Add [tests](./mgtt/test/) and [workflows](./.github/workflows/) running those 
 
 ### Fixed
 
