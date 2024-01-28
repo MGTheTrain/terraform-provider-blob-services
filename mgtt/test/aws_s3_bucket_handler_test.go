@@ -27,7 +27,7 @@ func TestAwsS3BucketHandler(t *testing.T) {
 	assert.NoError(t, err, "CreateAwsS3Bucket should not return an error")
 
 	// [D]elete
-	awsS3BucketHandler.DeleteAwsS3Bucket()
+	err = awsS3BucketHandler.DeleteAwsS3Bucket()
 	assert.NoError(t, err, "DeleteAwsS3Bucket should not return an error")
 
 }
