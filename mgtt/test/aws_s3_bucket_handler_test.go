@@ -13,7 +13,7 @@ func TestAwsS3BucketHandler(t *testing.T) {
 	accessKeyId := os.Getenv("AWS_ACCESS_KEY_ID")
 	secretAccessKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
 	region := "eu-central-1"
-	bucketName := "test-bucket-12345"
+	bucketName := "test-bucket-73489573894"
 
 	if accessKeyId == "" || secretAccessKey == "" {
 		t.Fatal("Missing required environment variables")
