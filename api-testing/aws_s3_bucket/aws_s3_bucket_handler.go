@@ -47,8 +47,8 @@ func NewAwsS3BucketHandler(accessKeyID, secretAccessKey, bucketName, region stri
 	}, nil
 }
 
-// handleCreateAwsS3Bucket creates an AWS S3 bucket
-func (handler *AwsS3BucketHandler) handleCreateAwsS3Bucket() {
+// CreateAwsS3Bucket creates an AWS S3 bucket
+func (handler *AwsS3BucketHandler) CreateAwsS3Bucket() {
 	_, err := handler.svc.CreateBucket(&s3.CreateBucketInput{
 		Bucket: aws.String(handler.bucket),
 	})
@@ -68,8 +68,8 @@ func (handler *AwsS3BucketHandler) handleCreateAwsS3Bucket() {
 	fmt.Printf("Bucket %q successfully created\n", handler.bucket)
 }
 
-// handleDeleteAwsS3Bucket deletes an AWS S3 bucket
-func (handler *AwsS3BucketHandler) handleDeleteAwsS3Bucket() {
+// DeleteAwsS3Bucket deletes an AWS S3 bucket
+func (handler *AwsS3BucketHandler) DeleteAwsS3Bucket() {
 	_, err := handler.svc.DeleteBucket(&s3.DeleteBucketInput{
 		Bucket: aws.String(handler.bucket),
 	})
@@ -106,7 +106,7 @@ func main() {
 				exitErrorf("Error creating AWS S3 bucket handler: %v", err)
 			}
 
-			handler.handleCreateAwsS3Bucket()
+			handler.CreateAwsS3Bucket()
 		},
 	}
 
@@ -119,7 +119,7 @@ func main() {
 				exitErrorf("Error creating AWS S3 bucket handler: %v", err)
 			}
 
-			handler.handleDeleteAwsS3Bucket()
+			handler.DeleteAwsS3Bucket()
 		},
 	})
 
