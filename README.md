@@ -8,24 +8,24 @@
 
 ## Description
 
-Sample repository implementing a terraform provider designed for managing resources in Azure and AWS
+Sample repository implementing a Terraform provider designed for managing resources in Azure and AWS.
 
 ## References
 
-- [Writing Custom Terraform Providers](https://www.hashicorp.com/blog/writing-custom-terraform-providers). This link is deprecated but helpful to understand the basic concepts from the hashicorp founder.
-- [How to develop/ test existing provider locally?](https://github.com/hashicorp/terraform-provider-aws/issues/5396)
+- [Writing Custom Terraform Providers](https://www.hashicorp.com/blog/writing-custom-terraform-providers). This link is deprecated but helpful to understand the basic concepts from the HashiCorp founder.
+- [How to develop/test existing provider locally?](https://github.com/hashicorp/terraform-provider-aws/issues/5396)
 - [terraform-provider-klayer Github repository](https://github.com/ldcorentin/terraform-provider-klayer). **13-01-2023** - Latest practical example
-- [https://developer.hashicorp.com/terraform/plugin/sdkv2?collectionSlug=providers&productSlug=terraform](https://developer.hashicorp.com/terraform/plugin/sdkv2). Latest hashicorp documentation on Terraform Plugin SDKv2 for writing custom providers.
-- [Schema Attributes and Types](https://developer.hashicorp.com/terraform/plugin/sdkv2/schemas/schema-types). Check section on `TypeSet`.
+- [HashiCorp documentation on Terraform Plugin SDKv2](https://developer.hashicorp.com/terraform/plugin/sdkv2?collectionSlug=providers&productSlug=terraform). Latest documentation on Terraform Plugin SDKv2 for writing custom providers.
+- [Schema Attributes and Types](https://developer.hashicorp.com/terraform/plugin/sdkv2/schemas/schema-types). Check the section on `TypeSet`.
 
 ## How to use
 
-### (Optional) Check cli tools serving as a basis for implemting resources
+### (Optional) Check CLI tools serving as a basis for implementing resources
 
-Cli tools can be found here:
+CLI tools can be found here:
 
-- [README.md in regards to azure_storage_account cli tool](./api-testing/azure_storage_account/README.md)
-- [README.md in regards to aws_s3_bucket cli tool](./api-testing/aws_s3_bucket/README.md)
+- [README.md in regards to azure_storage_account CLI tool](./api-testing/azure_storage_account/README.md)
+- [README.md in regards to aws_s3_bucket CLI tool](./api-testing/aws_s3_bucket/README.md)
 
 ### Exporting environment variables
 
