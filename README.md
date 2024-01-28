@@ -101,7 +101,7 @@ source secrets.cfg
 cd terraform
 terraform init -plugin-dir="./.terraform/plugins/"
 terraform plan
-# It is important to set the the log level before applying `teraform apply` or `teraform destroy` 
+# It is important to set the the DEBUG log level before applying `teraform apply` or `teraform destroy` 
 export TF_LOG=DEBUG
 terraform apply --auto-approve # initial create requests
 # Update input variables in tf files, e.g. 
