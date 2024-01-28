@@ -3,6 +3,7 @@ module github.com/MGTheTrain/terraform-provider-mgtt
 go 1.21.3
 
 require (
+	github.com/aws/aws-sdk-go v1.50.5
 	github.com/google/uuid v1.3.1
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
 	github.com/stretchr/testify v1.7.2
@@ -27,6 +28,7 @@ require (
 	github.com/hashicorp/terraform-registry-address v0.2.3 // indirect
 	github.com/hashicorp/terraform-svchost v0.1.1 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
