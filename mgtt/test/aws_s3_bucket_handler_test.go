@@ -19,15 +19,15 @@ func TestAwsS3BucketHandler(t *testing.T) {
 		t.Fatal("Missing required environment variables")
 	}
 
-	awsS3BucketHandler, err := mgtt.NewAwsS3BucketHandler(accessKeyId, secretAccessKey, bucketName, region)
+	awsS3BucketHandler, err := mgtt.NewAwsS3BucketHandler(accessKeyId, secretAccessKey, region)
 	assert.NoError(t, err, "NewAwsS3BucketHandler should not return an error")
 
 	// [C]reate
-	err = awsS3BucketHandler.CreateAwsS3Bucket()
+	err = awsS3BucketHandler.CreateAwsS3Bucket(bucketName)
 	assert.NoError(t, err, "CreateAwsS3Bucket should not return an error")
 
 	// [D]elete
-	err = awsS3BucketHandler.DeleteAwsS3Bucket()
+	err = awsS3BucketHandler.DeleteAwsS3Bucket(bucketName)
 	assert.NoError(t, err, "DeleteAwsS3Bucket should not return an error")
 
 }
