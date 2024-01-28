@@ -3,6 +3,7 @@ package mgtt
 import (
 	"os"
 
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -67,8 +68,13 @@ func resourceMgttAwsS3BucketCreate(d *schema.ResourceData, m interface{}) error 
 		return err
 	}
 
-	d.SetId(name)
-	return setS3BucketData(d, name)
+	id := uuid.New()
+	d.SetId(id.String())
+
+	if err := setS3BucketData(d, name); err != nil {
+		return err
+	}
+	return nil
 }
 
 func resourceMgttAwsS3BucketRead(d *schema.ResourceData, m interface{}) error {
