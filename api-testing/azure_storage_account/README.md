@@ -48,13 +48,15 @@ az account get-access-token
 On Windows OS:
 
 ```sh
- go build -o azure_storage_account_handler.exe
+go mod tidy
+go build -o azure_storage_account_handler.exe
 ```
 
 On Unix systems (MacOS or Ubuntu >=18.04/debian >=11):
 
 ```sh
- go build -o azure_storage_account_handler
+go mod tidy
+go build -o azure_storage_account_handler
 ```
 
 ### Run the cli application
