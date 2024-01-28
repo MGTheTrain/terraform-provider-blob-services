@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial setup considering [cli applications](./api-testing/) utilizing REST APIs or SDKs deriving handler structs used in [mgtt terraform provider resources](./mgtt/) 
 - Add [tests](./mgtt/test/) and [workflows](./.github/workflows/) running those 
+- **NOTE**:  The `mgtt_azurerm_storage_account_container` is not yet working. Refer to comment in [resourceMgttAzurermStorageAccountContainerCreate function](./mgtt/resource_mgtt_azurerm_storage_account_container.go)
 
 ### Fixed
 
