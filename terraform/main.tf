@@ -1,6 +1,6 @@
-# resource "mgtt_aws_s3_bucket" "this" {
-#     name = "great"
-# }
+resource "mgtt_aws_s3_bucket" "this" {
+    name = "laughing-bucket-of-fun-2024"
+}
 
 resource "mgtt_azurerm_rg" "this" {
     name = "rg-test-9000"

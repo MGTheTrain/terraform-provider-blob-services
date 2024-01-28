@@ -1,4 +1,4 @@
-module main
+module github.com/MGTheTrain/terraform-provider-mgtt/blob/implement-resources/api-testing/azure_storage_account
 
 go 1.21.3
 
