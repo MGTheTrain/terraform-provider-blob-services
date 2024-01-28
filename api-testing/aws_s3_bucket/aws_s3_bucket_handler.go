@@ -1,17 +1,16 @@
 package main
 
-import (
-	"bytes"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"os"
-	"strings"
-	"time"
+// Based on:
+// - https://github.com/awsdocs/aws-doc-sdk-examples/blob/main/go/example_code/s3/s3_delete_bucket.go
 
+import (
+	"fmt"
+	"os"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/spf13/cobra"
 )
 
@@ -21,6 +20,74 @@ var (
 	bucketName      string
 	region          string
 )
+
+// AwsS3BucketHandler is a struct for handling AWS S3 bucket operations
+type AwsS3BucketHandler struct {
+	svc    *s3.S3
+	bucket string
+	region string
+}
+
+// NewAwsS3BucketHandler creates a new AwsS3BucketHandler instance
+func NewAwsS3BucketHandler(accessKeyID, secretAccessKey, bucketName, region string) (*AwsS3BucketHandler, error) {
+	sess, err := session.NewSession(&aws.Config{
+		Region:      aws.String(region),
+		Credentials: credentials.NewStaticCredentials(accessKeyID, secretAccessKey, ""),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	svc := s3.New(sess)
+
+	return &AwsS3BucketHandler{
+		svc:    svc,
+		bucket: bucketName,
+		region: region,
+	}, nil
+}
+
+// handleCreateAwsS3Bucket creates an AWS S3 bucket
+func (handler *AwsS3BucketHandler) handleCreateAwsS3Bucket() {
+	_, err := handler.svc.CreateBucket(&s3.CreateBucketInput{
+		Bucket: aws.String(handler.bucket),
+	})
+	if err != nil {
+		exitErrorf("Unable to create bucket %q, %v", handler.bucket, err)
+	}
+
+	fmt.Printf("Waiting for bucket %q to be created...\n", handler.bucket)
+
+	err = handler.svc.WaitUntilBucketExists(&s3.HeadBucketInput{
+		Bucket: aws.String(handler.bucket),
+	})
+	if err != nil {
+		exitErrorf("Error occurred while waiting for bucket to be created, %v", handler.bucket)
+	}
+
+	fmt.Printf("Bucket %q successfully created\n", handler.bucket)
+}
+
+// handleDeleteAwsS3Bucket deletes an AWS S3 bucket
+func (handler *AwsS3BucketHandler) handleDeleteAwsS3Bucket() {
+	_, err := handler.svc.DeleteBucket(&s3.DeleteBucketInput{
+		Bucket: aws.String(handler.bucket),
+	})
+	if err != nil {
+		exitErrorf("Unable to delete bucket %q, %v", handler.bucket, err)
+	}
+
+	fmt.Printf("Waiting for bucket %q to be deleted...\n", handler.bucket)
+
+	err = handler.svc.WaitUntilBucketNotExists(&s3.HeadBucketInput{
+		Bucket: aws.String(handler.bucket),
+	})
+	if err != nil {
+		exitErrorf("Error occurred while waiting for bucket to be deleted, %v", handler.bucket)
+	}
+
+	fmt.Printf("Bucket %q successfully deleted\n", handler.bucket)
+}
 
 func main() {
 	var rootCmd = &cobra.Command{Use: "aws_s3_bucket_handler"}
@@ -33,13 +100,26 @@ func main() {
 	s3bucketCmd := &cobra.Command{
 		Use:   "bucket",
 		Short: "Manage AWS S3 bucket",
+		Run: func(cmd *cobra.Command, args []string) {
+			handler, err := NewAwsS3BucketHandler(accessKeyId, secretAccessKey, bucketName, region)
+			if err != nil {
+				exitErrorf("Error creating AWS S3 bucket handler: %v", err)
+			}
+
+			handler.handleCreateAwsS3Bucket()
+		},
 	}
 
 	s3bucketCmd.AddCommand(&cobra.Command{
-		Use:   "create",
-		Short: "Create AWS S3 bucket by bucket name",
+		Use:   "delete",
+		Short: "Delete AWS S3 bucket by bucket name",
 		Run: func(cmd *cobra.Command, args []string) {
-			handleCreateAwsS3Bucket(accessKeyId, secretAccessKey, bucketName, region)
+			handler, err := NewAwsS3BucketHandler(accessKeyId, secretAccessKey, bucketName, region)
+			if err != nil {
+				exitErrorf("Error creating AWS S3 bucket handler: %v", err)
+			}
+
+			handler.handleDeleteAwsS3Bucket()
 		},
 	})
 
@@ -51,124 +131,7 @@ func main() {
 	}
 }
 
-func handleCreateAwsS3Bucket(accessKeyId, secretAccessKey, bucketName, region string) {
-	requestURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/", bucketName, region)
-
-	signature, dateTime := generateSignature("PUT", requestURL, accessKeyId, secretAccessKey)
-
-	headers := map[string]string{
-		"Authorization": fmt.Sprintf("AWS4-HMAC-SHA256 Credential=%s/%s/%s/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=%s",
-			accessKeyId,
-			dateTime.Format("20060102"),
-			region,
-			signature,
-		),
-		"X-Amz-Content-Sha256": "UNSIGNED-PAYLOAD",
-		"X-Amz-Date":           dateTime.Format("20060102T150405Z"),
-	}
-
-	sendHTTPRequest("PUT", requestURL, nil, headers)
-}
-
-func generateSignature(method, requestURL, accessKeyId, secretAccessKey string) (string, time.Time) {
-	dateTime := time.Now().UTC()
-	date := dateTime.Format("20060102")
-
-	// Canonical Request
-	canonicalRequest := fmt.Sprintf("%s\n%s\n\nhost:%s\n\nhost\nUNSIGNED-PAYLOAD",
-		method,
-		"/",
-		requestURL,
-	)
-
-	// String to Sign
-	stringToSign := fmt.Sprintf("AWS4-HMAC-SHA256\n%s\n%s/%s/s3/aws4_request\n%x",
-		dateTime.Format("20060102T150405Z"),
-		date,
-		region,
-		sha256Hash(canonicalRequest),
-	)
-
-	// Signing Key
-	signingKey := getSigningKey(secretAccessKey, dateTime, region)
-
-	// Signing the String to Sign
-	signature := hmacSHA256(signingKey, []byte(stringToSign))
-	signatureString := base64.StdEncoding.EncodeToString(signature)
-
-	return signatureString, dateTime
-}
-
-// Function to compute SHA-256 hash and return it as a byte slice
-func sha256Hash(data string) []byte {
-	hasher := sha256.New()
-	hasher.Write([]byte(data))
-	return hasher.Sum(nil)
-}
-
-func getSigningKey(secretAccessKey string, dateTime time.Time, region string) []byte {
-	date := dateTime.Format("20060102")
-	kDate := hmacSHA256([]byte("AWS4"+secretAccessKey), []byte(date))
-	kRegion := hmacSHA256(kDate, []byte(region))
-	kService := hmacSHA256(kRegion, []byte("s3"))
-	signingKey := hmacSHA256(kService, []byte("aws4_request"))
-	return signingKey
-}
-
-func hmacSHA256(key, data []byte) []byte {
-	h := hmac.New(sha256.New, key)
-	h.Write(data)
-	return h.Sum(nil)
-}
-
-func sendHTTPRequest(method, url string, requestBody map[string]interface{}, headers map[string]string) {
-	var req *http.Request
-	var err error
-
-	if requestBody != nil {
-		jsonBody, err := json.Marshal(requestBody)
-		if err != nil {
-			fmt.Println("Error encoding JSON:", err)
-			return
-		}
-		req, err = http.NewRequest(method, url, bytes.NewBuffer(jsonBody))
-		req.Header.Set("Content-Type", "application/json") // Add this line for content type
-	} else {
-		req, err = http.NewRequest(method, url, nil)
-	}
-
-	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return
-	}
-
-	// Set headers
-	for key, value := range headers {
-		req.Header.Set(key, value)
-	}
-
-	// Print all headers
-	fmt.Println("Request Headers:")
-	for key, values := range req.Header {
-		fmt.Printf("%s: %s\n", key, strings.Join(values, ", "))
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error making request:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	fmt.Println("URL:", url)
-	fmt.Println("Response Status:", resp.Status)
-	fmt.Println("Response Body:")
-	buf := new(bytes.Buffer)
-	_, err = buf.ReadFrom(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading from buffer:", err)
-		return
-	}
-	fmt.Println(buf.String())
+func exitErrorf(msg string, args ...interface{}) {
+	fmt.Fprintf(os.Stderr, msg+"\n", args...)
+	os.Exit(1)
 }
