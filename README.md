@@ -4,7 +4,7 @@
 
 - [Description](#description)
 - [References](#references)
-- [How to use](#how-to-use)
+- [Getting started](#getting-started)
 
 ## Description
 
@@ -18,7 +18,13 @@ Sample repository implementing a Terraform provider designed for managing resour
 - [HashiCorp documentation on Terraform Plugin SDKv2](https://developer.hashicorp.com/terraform/plugin/sdkv2?collectionSlug=providers&productSlug=terraform). Latest documentation on Terraform Plugin SDKv2 for writing custom providers.
 - [Schema Attributes and Types](https://developer.hashicorp.com/terraform/plugin/sdkv2/schemas/schema-types). Check the section on `TypeSet`.
 
-## How to use
+## Getting started
+
+### Precondition
+
+- Install the [Docker engine]()
+- In VS Code install the `Dev Containers` extension in order to utilize dev containers
+- You can optionally install tools like [go](https://go.dev/doc/install) and [terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) yourself instead of utilizing a dev container 
 
 ### (Optional) Check CLI tools serving as a basis for implementing resources
 
@@ -29,7 +35,7 @@ CLI tools can be found here:
 
 ### Exporting environment variables
 
-Create from the [secrets.template.cfg](./templates/secrets.template.cfg) a secrets.cfg file in the project root directory and replace the `PLACEHOLDER_*` values. Some [tests](./mgtt/test/) export the environment variables trough the secrets.cfg file.
+Create from the [secrets.template.cfg](./templates/secrets.template.cfg) a secrets.cfg file in the project root directory and replace the `PLACEHOLDER_*` values. Some [tests](./mgtt/test/) need environment variables listed in the secrets.cfg file.
 
 ```sh
 source secrets.cfg
