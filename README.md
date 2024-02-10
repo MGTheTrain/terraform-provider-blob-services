@@ -60,7 +60,7 @@ On modern Windows OS (version 10 or 11) run:
 go build -o terraform-provider-mgtt.exe
 ```
 
-On Windows Unix systems run: 
+On Unix systems (MacOS, Linux Ubuntu >=20.04, debian >=11) run: 
 
 ```sh
 go build -o terraform-provider-mgtt
